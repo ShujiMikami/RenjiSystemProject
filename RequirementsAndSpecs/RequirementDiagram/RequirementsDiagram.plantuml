@@ -1,0 +1,15 @@
+@startuml
+
+hide circle
+hide empty members
+hide method
+
+title システム要求図
+
+class "主要求" as ClassMainRequirement <<requirement>>{
+  ケージの温度を管理する
+}
+
+
+
+@enduml
