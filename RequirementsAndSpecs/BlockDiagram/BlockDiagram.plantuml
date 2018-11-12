@@ -1,6 +1,17 @@
 @startuml
 
-title ブロック図
+title Block Diagram 
 
+hide circle
+hide method
+hide empty members
+
+class "MainMCU" as BlockMCU <<block>>{
+
+}
+class "WiFiMCU" as BlockWiFi  <<block>>{
+}
+class "PowerCircuit" as BlockPowerCircuit <<block>>{
+}
 
 @enduml
