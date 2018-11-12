@@ -1,0 +1,32 @@
+@startuml
+
+title System Blocks
+
+hide circle
+hide empty members
+hide method
+
+class "MoblieDevice" as BlockMobileDevice <<block>>{
+  
+
+}
+
+class "TemperatureMeasureUnit" as BlockTemperatureMeasureUnit <<block>>{
+}
+
+class "MainControlUnit" as BlockMainControlUnit <<block>>{
+}
+
+class "UVLight" as BlockUVLight <<block>>{
+}
+
+class "ThermoHeater" as BlockThermoHeater <<block>>{
+}
+
+class "DataServer" as BlockDataServer <<block>>{
+}
+
+BlockMobileDevice --> BlockDataServer : Data request
+
+@enduml
+
