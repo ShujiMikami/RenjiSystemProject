@@ -6,14 +6,16 @@ hide circle
 hide empty members
 hide method
 
+class "MainControlUnit" as BlockMainControlUnit <<block>>{
+}
 package "Cage" as NodeCage <<node>>{
-  class "MoblieDevice" as BlockMobileDevice <<block>>{
-  }
-  
   class "TemperatureMeasureUnit" as BlockTemperatureMeasureUnit <<block>>{
-  }
-  
-  class "MainControlUnit" as BlockMainControlUnit <<block>>{
+    <<values>>
+    readonly Temperature : deg
+    --
+    <<operations>>
+    send_temperature()
+    send_batteryLevel()
   }
   
   class "UVLight" as BlockUVLight <<block>>{
@@ -21,16 +23,33 @@ package "Cage" as NodeCage <<node>>{
   
   class "ThermoHeater" as BlockThermoHeater <<block>>{
   }
+  class "CoolingFan" as BlockCoolingFan <<block>>{
+  }
 }
-class "DataServer" as BlockDataServer <<block>>{
+package "Server" as CloudServer <<cloud>>{
+  class "DataServer" as BlockDataServer <<block>>{
+  }
 }
 
+package "MoblieDevice" as NodeMobileDevice <<node>>{
+
+  class "MoblieDeviceApp" as BlockMobileDevice <<block>>{
+    <<values>>
+    ID : string
+    pass : string
+    --
+    <<operations>>
+    authenticate()
+    request_data()
+    view_data()
+  }
+}
 BlockMobileDevice -- BlockDataServer : internet 
 BlockMainControlUnit -- BlockDataServer : internet
 BlockMainControlUnit -- BlockTemperatureMeasureUnit : twilight
 BlockMainControlUnit -- BlockThermoHeater : AC100VCalble
 BlockMainControlUnit -- BlockUVLight : AC100VCalble
-
+BlockMainControlUnit -- BlockCoolingFan : AC100VCable
 
 @enduml
 
