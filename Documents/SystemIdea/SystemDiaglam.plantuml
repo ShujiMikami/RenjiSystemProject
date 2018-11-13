@@ -6,7 +6,22 @@ hide circle
 hide empty members
 hide method
 
-class "MainControlUnit" as BlockMainControlUnit <<block>>{
+package "MainControlUnit" as NodeMainControlUnit <<node>>{
+
+  class "MCU" as BlockMCU <<block>>{
+  }
+
+  class "WifiUnit" as BlockWifiUnit <<block>>{
+  }
+
+  class "EthernetUnit" as BlockEthernetUnit <<block>>{
+  }
+
+  class "ACSwitch" as BlockACSwitch <<block>>{
+  }
+
+  class "twilightModule" as BlockTwilightModule <<block>>{
+  }
 }
 package "Cage" as NodeCage <<node>>{
   class "TemperatureMeasureUnit" as BlockTemperatureMeasureUnit <<block>>{
@@ -44,12 +59,17 @@ package "MoblieDevice" as NodeMobileDevice <<node>>{
     view_data()
   }
 }
+BlockMCU -- BlockWifiUnit : UART
+BlockMCU -- BlockEthernetUnit : SPI
+BlockMCU -- BlockTwilightModule : UART
+BlockMCU -- BlockACSwitch : GPIO
 BlockMobileDevice -- BlockDataServer : internet 
-BlockMainControlUnit -- BlockDataServer : internet
-BlockMainControlUnit -- BlockTemperatureMeasureUnit : twilight
-BlockMainControlUnit -- BlockThermoHeater : AC100VCalble
-BlockMainControlUnit -- BlockUVLight : AC100VCalble
-BlockMainControlUnit -- BlockCoolingFan : AC100VCable
+BlockWifiUnit -- BlockDataServer : internet
+BlockEthernetUnit -- BlockDataServer : internet
+BlockTwilightModule -- BlockTemperatureMeasureUnit : twilight
+BlockACSwitch -- BlockThermoHeater : AC100VCable
+BlockACSwitch -- BlockUVLight : AC100VCable
+BlockACSwitch -- BlockCoolingFan : AC100VCable
 
 @enduml
 
