@@ -9,17 +9,36 @@ actor User as ActorUser
 
 
 package ControlBox{
+usecase "環境制御 \n==\n フルオート \n--\n セミオート \n--\n マニュアル" as UsecaseMainControl
+  usecase "ヒータON/OFF" as UsecaseHeaterControl
+  usecase "UV ON/OFF" as UsecaseUVControl
+  usecase "ファン ON/OFF" as UsecaseFanControl
+  usecase "温度測定" as UsecaseTempMeasure
+  usecase "Wifi通信機能" as UsecaseWifiConnect
+  usecase "外部NTPで時刻補正機能" as UsecaseNTPTimeCalibration
+  usecase "状態表示" as UsecaseStatusIndicate
+  usecase "制御値設定" as UsecaseSetValue
+  usecase "サーバへデータ送信" as UsecaseSendDataToServer
+
+  UsecaseMainControl <.. UsecaseHeaterControl : <<include>>
+  UsecaseMainControl <.. UsecaseUVControl : <<include>>
+  UsecaseMainControl <.. UsecaseFanControl : <<include>>
+  UsecaseMainControl <.. UsecaseTempMeasure : <<include>>
+  UsecaseMainControl <.. UsecaseStatusIndicate : <<include>>
+  UsecaseMainControl <.. UsecaseSetValue : <<include>>
+  UsecaseSendDataToServer <.. UsecaseNTPTimeCalibration : <<include>>
+  UsecaseSendDataToServer <.. UsecaseWifiConnect : <<include>>
+  
 }
+
 
 package Server{
   usecase "DDNS機能" as UsecaseDDNS
-  usecase "NTPで時刻補正機能" as UsecaseNTPTimeCalibration
   usecase "ControlBoxから送信されたデータの蓄積" as UsecaseDataLogging
   usecase "ControlBoxから一定時間データが来ない場合通知" as UsecaseNotifyControlBoxSilent
   usecase "各種データ表示および制御" as UsecaseRemoteControlAndWatch
   
   UsecaseRemoteControlAndWatch <.. UsecaseDDNS : <<include>>
-  UsecaseDataLogging <.. UsecaseNTPTimeCalibration : <<include>>
 }
 
 package PHPonServer{
@@ -38,4 +57,6 @@ UsecaseRemoteControlAndWatch o-- UsecaseGetCurrentStatus
 UsecaseRemoteControlAndWatch o-- UsecaseFullManualControl
 UsecaseRemoteControlAndWatch o-- UsecaseIndicateGraph
 UsecaseRemoteControlAndWatch o-- UsecaseSetupControlBox
+UsecaseDataLogging <.. UsecaseSendDataToServer : <<include>>
+UsecaseDataLogging <.. UsecaseMainControl : <<include>>
 @enduml
