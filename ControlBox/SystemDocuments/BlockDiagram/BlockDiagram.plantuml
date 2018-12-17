@@ -1,0 +1,78 @@
+@startuml
+
+title Block Diagram 
+
+hide circle
+hide method
+hide empty members
+
+
+class "WiFiMCU" as BlockWiFiMCU  <<block>>{
+}
+class "ADC" as BlockADC <<block>>{
+}
+class "PowerCircuit" as BlockPowerCircuit <<block>>{
+}
+class "ACSwitchCircuit" as BlockACSwitchCircuit <<block>>{
+}
+class "LCDIndicator" as BlockLCDIndicator <<block>>{
+}
+class "ResistiveDividor" as BlockResistiveDividor <<block>>{
+}
+class "Thermistor" as BlockThermistor <<block>>{
+}
+class "UVLight" as BlockUVLight <<block>>{
+}
+class "Heater" as BlockHeater <<block>>{
+}
+class "Fan" as BlockFan <<block>>{
+}
+class "SlideSwitch" as BlockSlideSwitch <<block>>{
+}
+class "PushSwitch" as BlockPushSwitch <<block>>{
+}
+class "PowerSwitch" as BlockPowerSwitch <<block>>{
+}
+
+'WifiMCUとADCはI2Cで接続
+BlockWiFiMCU -- BlockADC : I2C
+
+'WifiMCUには3.3Vを供給
+BlockWiFiMCU -- BlockPowerCircuit : DC3.3V
+
+BlockWiFiMCU "1"--"3" BlockACSwitchCircuit : GPIO
+
+'WifiMCUとLCDはI2Cで接続
+BlockWiFiMCU -- BlockLCDIndicator : I2C
+
+'LCDには5Vを供給
+BlockPowerCircuit -- BlockLCDIndicator : DC5V
+
+'ResistiveDividorには3.3Vを供給
+BlockPowerCircuit -- BlockResistiveDividor : DC3.3V
+
+'ADCには3.3Vを供給
+BlockPowerCircuit -- BlockADC : DC3.3V
+
+'ADCに, ResistiveDividorの入力をキャプチャさせる
+BlockADC -- BlockResistiveDividor : Analog Signal Line
+
+'ResistiveDividorに, サーミスタを接続
+BlockResistiveDividor "1"--"1" BlockThermistor : Analog Signal Line
+
+'ACSwitchCircuitに, UVLightを接続
+BlockACSwitchCircuit "1"--"1" BlockUVLight : 100V Line
+
+'ACSwitchCircuitに, Heaterを接続
+BlockACSwitchCircuit "1"--"1" BlockHeater : 100V Line
+
+'ACSwitchCircuitに, Fanを接続
+BlockACSwitchCircuit "1"--"1" BlockFan : 100V Line
+
+'Slideスイッチ, PushSwitchはMCUに接続
+BlockSlideSwitch "6" -- "1" BlockWiFiMCU : GPIO
+BlockPushSwitch "2" -- "1" BlockWiFiMCU : GPIO
+
+'PowerSwitchは, PowerCircuitに接続'
+BlockPowerSwitch -- BlockPowerCircuit : 100V Line
+@enduml

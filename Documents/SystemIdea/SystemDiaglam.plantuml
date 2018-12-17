@@ -1,0 +1,75 @@
+@startuml
+
+title System Blocks
+
+hide circle
+hide empty members
+hide method
+
+package "MainControlUnit" as NodeMainControlUnit <<node>>{
+
+  class "MCU" as BlockMCU <<block>>{
+  }
+
+  class "WifiUnit" as BlockWifiUnit <<block>>{
+  }
+
+  class "EthernetUnit" as BlockEthernetUnit <<block>>{
+  }
+
+  class "ACSwitch" as BlockACSwitch <<block>>{
+  }
+
+  class "twilightModule" as BlockTwilightModule <<block>>{
+  }
+}
+package "Cage" as NodeCage <<node>>{
+  class "TemperatureMeasureUnit" as BlockTemperatureMeasureUnit <<block>>{
+    <<values>>
+    readonly Temperature : deg
+    --
+    <<operations>>
+    send_temperature()
+    send_batteryLevel()
+  }
+  
+  class "UVLight" as BlockUVLight <<block>>{
+  }
+  
+  class "ThermoHeater" as BlockThermoHeater <<block>>{
+  }
+  class "CoolingFan" as BlockCoolingFan <<block>>{
+  }
+}
+package "Server" as CloudServer <<cloud>>{
+  class "DataServer" as BlockDataServer <<block>>{
+  }
+}
+
+package "MoblieDevice" as NodeMobileDevice <<node>>{
+
+  class "MoblieDeviceApp" as BlockMobileDevice <<block>>{
+    <<values>>
+    ID : string
+    pass : string
+    --
+    <<operations>>
+    authenticate()
+    request_data()
+    view_data()
+  }
+}
+BlockMCU -- BlockWifiUnit : UART
+BlockMCU -- BlockEthernetUnit : SPI
+BlockMCU -- BlockTwilightModule : UART
+BlockMCU -- BlockACSwitch : GPIO
+BlockMobileDevice -- BlockDataServer : internet 
+BlockWifiUnit -- BlockDataServer : internet
+BlockEthernetUnit -- BlockDataServer : internet
+BlockTwilightModule -- BlockTemperatureMeasureUnit : twilight
+BlockACSwitch -- BlockThermoHeater : AC100VCable
+BlockACSwitch -- BlockUVLight : AC100VCable
+BlockACSwitch -- BlockCoolingFan : AC100VCable
+
+@enduml
+

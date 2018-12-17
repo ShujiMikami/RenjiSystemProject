@@ -1,0 +1,48 @@
+@startuml
+
+title Block Diagram 
+
+hide circle
+hide method
+hide empty members
+
+class "ControlBox" as BlockControlBox <<block>>{
+}
+
+class "Thermistor" as BlockThermistor <<block>>{
+}
+class "UVLight" as BlockUVLight <<block>>{
+}
+class "Heater" as BlockHeater <<block>>{
+}
+class "Fan" as BlockFan <<block>>{
+}
+
+class "Server" as BlockServer <<block>>{
+}
+class "WebBrowser" as BlockWebBrowser <<block>>{
+}
+class "WifiRouter" as BlockWifiRouter <<block>>{
+}
+
+'ControlBoxに, UVLightを接続
+BlockControlBox "1"--"1" BlockUVLight : 100V Line
+
+'ControlBoxに, Heaterを接続
+BlockControlBox "1"--"1" BlockHeater : 100V Line
+
+'ControlBoxに, Fanを接続
+BlockControlBox "1"--"1" BlockFan : 100V Line
+
+'ControlBoxに, Thermistorを接続
+BlockControlBox "1"--"1..3" BlockThermistor : AnalogSignal
+
+'ControlBoxは, RouterとWifi接続
+BlockControlBox "1"--"1" BlockWifiRouter : Wifi
+
+'RouterとServerはLANで接続
+BlockWifiRouter "1"--"1" BlockServer : LAN
+
+'RouterとWebBrowserはInternetで接続
+BlockWifiRouter "1"--".*" BlockWebBrowser : Internet
+@enduml
