@@ -6,10 +6,17 @@ hide method
 
 title システム要求図
 
-class "主要求" as ClassMainRequirement <<requirement>>{
-  ケージの温度を管理する
+class "生態環境維持" as RequirementControlEnvironment <<requirement>>{
+  text = "生体の環境を適切に維持してほしい"
 }
-
+class "温度制御" as RequirementTemperatureControl <<requirement>>{
+  text = "ケージ内を指定した温度に制御してほしい"
+}
+class "UV制御" as RequirementUVControl <<requirement>>{
+  text = "ケージ内にUVBの紫外線ON/OFFを制御してほしい"
+}
+class "オンライン監視" as RequirementOnlineConnection <<requirement>>{
+}
 
 
 @enduml
