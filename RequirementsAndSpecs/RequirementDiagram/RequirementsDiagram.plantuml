@@ -1,0 +1,23 @@
+@startuml
+
+hide circle
+hide empty members
+hide method
+
+title システム要求図
+
+class "生態環境維持" as RequirementControlEnvironment <<requirement>>{
+  text = "生体の環境を適切に維持してほしい"
+}
+class "温度制御" as RequirementTemperatureControl <<requirement>>{
+  text = "ケージ内を指定した温度に制御してほしい"
+}
+class "UV制御" as RequirementUVControl <<requirement>>{
+  text = "ケージ内にUVBの紫外線ON/OFFを制御してほしい"
+}
+class "オンライン監視" as RequirementOnlineConnection <<requirement>>{
+  text = "インターネット経由で, ケージの状態をチェックしたい"
+}
+
+
+@enduml

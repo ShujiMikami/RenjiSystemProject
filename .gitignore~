@@ -1,5 +1,7 @@
 .memo.txt.swp
+<<<<<<< HEAD
 .RequirementsDiagram.plantuml.swp
+=======
 .BlockDiagram.plantuml.swp
 Documents/SystemIdea/SystemDiaglam.plantuml~
 Documents/SystemIdea/.SystemDiaglam.plantuml.un~
@@ -10,5 +12,4 @@ Documents/.memo.txt.un~
 RequirementsAndSpecs/UsecaseDiagram/UsecaseDiagram.plantuml~
 RequirementsAndSpecs/UsecaseDiagram/.UsecaseDiagram.plantuml.un~
 .UsecaseDiagram.plantuml.swp
-RequirementsAndSpecs/RequirementDiagram/.RequirementsDiagram.plantuml.un~
-RequirementsAndSpecs/RequirementDiagram/RequirementsDiagram.plantuml~
+>>>>>>> develop
