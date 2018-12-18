@@ -16,6 +16,7 @@ class "UV制御" as RequirementUVControl <<requirement>>{
   text = "ケージ内にUVBの紫外線ON/OFFを制御してほしい"
 }
 class "オンライン監視" as RequirementOnlineConnection <<requirement>>{
+  text = "インターネット経由で, ケージの状態をチェックしたい"
 }
 
 
