@@ -5,20 +5,37 @@
 #define I2C_SAD 0x5E
 #define I2C_FREQ 100000
 
+//Start I2C Slave
+I2CSlave i2cSlave(I2C_SDA_PIN, I2C_SCL_PIN);
 
+void commandBuffering();
 
-int main() {
-    //Start I2C Slave
-    I2CSlave i2cSlave(I2C_SDA_PIN, I2C_SCL_PIN);
-
+int main() 
+{
     //AddressSetting
     i2cSlave.address(I2C_SAD);
 
     //FreqSetting
     i2cSlave.frequency(I2C_FREQ);
-    
-
 
     while(1) {
+        
+    }
+}
+
+void commandBuffering()
+{
+    int receivedStatus = i2cSlave.receive();
+
+    switch (receivedStatus)
+    {
+        case I2CSlave::WriteAddressed :
+            /* code */
+            break;
+        case I2CSlave::ReadAddressed : 
+            /* code */
+            break;
+        default:
+            break;
     }
 }
