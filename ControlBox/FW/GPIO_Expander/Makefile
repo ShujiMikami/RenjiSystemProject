@@ -23,7 +23,7 @@ MAKETARGET = '$(MAKE)' --no-print-directory -C $(OBJDIR) -f '$(mkfile_path)' \
 .PHONY: $(OBJDIR) clean
 all:
 	+@$(call MAKEDIR,$(OBJDIR))
-	+@$(MAKETARGET)
+	+$(MAKETARGET)
 $(OBJDIR): all
 Makefile : ;
 % :: $(OBJDIR) ; :
@@ -229,7 +229,7 @@ ASM_FLAGS += -I../mbed/drivers
 ASM_FLAGS += -I../mbed/hal
 ASM_FLAGS += -I../mbed/platform
 ASM_FLAGS += -include
-ASM_FLAGS += /filer/workspace_data/exports/5/57b9e70935751adaa4dfc54a4dec5f0b/GPIO_Expander/mbed_config.h
+ASM_FLAGS += ../mbed_config.h
 ASM_FLAGS += -x
 ASM_FLAGS += assembler-with-cpp
 ASM_FLAGS += -c
@@ -270,7 +270,7 @@ all: $(PROJECT).bin $(PROJECT).hex size
 	+@$(call MAKEDIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
   
-	@$(AS) -c $(ASM_FLAGS) -o $@ $<
+	$(AS) -c $(ASM_FLAGS) -o $@ $<
   
 
 
@@ -278,18 +278,18 @@ all: $(PROJECT).bin $(PROJECT).hex size
 	+@$(call MAKEDIR,$(dir $@))
 	+@echo "Assemble: $(notdir $<)"
   
-	@$(AS) -c $(ASM_FLAGS) -o $@ $<
+	$(AS) -c $(ASM_FLAGS) -o $@ $<
   
 
 .c.o:
 	+@$(call MAKEDIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
-	@$(CC) $(C_FLAGS) $(INCLUDE_PATHS) -o $@ $<
+	$(CC) $(C_FLAGS) $(INCLUDE_PATHS) -o $@ $<
 
 .cpp.o:
 	+@$(call MAKEDIR,$(dir $@))
 	+@echo "Compile: $(notdir $<)"
-	@$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) -o $@ $<
+	$(CPP) $(CXX_FLAGS) $(INCLUDE_PATHS) -o $@ $<
 
 
 $(PROJECT).link_script.ld: $(LINKER_SCRIPT)
