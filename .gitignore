@@ -13,3 +13,5 @@ RequirementsAndSpecs/UsecaseDiagram/.UsecaseDiagram.plantuml.un~
 RequirementsAndSpecs/RequirementDiagram/.RequirementsDiagram.plantuml.un~
 RequirementsAndSpecs/RequirementDiagram/RequirementsDiagram.plantuml~
 ControlBox/FW/GPIO_Expander/BUILD/
+ControlBox/FW/GPIO_Expander/.vscode/.cortex-debug.peripherals.state.json
+ControlBox/FW/GPIO_Expander/.vscode/.cortex-debug.registers.state.json
