@@ -1,0 +1,47 @@
+MainMCU-GPIO_Expander間の通信ルール
+
+1 通信方式
+    MainMCUをマスターとした, 100kHzのI2C通信とする
+
+2 通信内容
+    GPIOの個別HL制御
+    GPIOの個別状態取得
+    GPIOのバスHL制御
+    GPIOのバス状態取得
+    ADCでの測定開始
+    ADCでの測定完了問い合わせ
+    ADCでの測定結果取得
+
+3 通信パケット構造
+    3.1 制御時
+        M:SAD+W
+        S:ACK
+        M:COMMAND
+        S:ACK
+        M:PARAM
+        S:NACK
+        M:STOP
+
+    3.2 取得時
+        M:SAD+W
+        S:ACK
+        M:COMMAND
+        S:ACK
+        M:SAD+R(Repeated)
+        S:ACK
+        S:DATA
+        M:ACK
+        M:STOP
+
+4 コマンドコード
+    0 : GPIOの個別HL制御
+    1 : GPIOの個別状態取得
+    2 : GPIOのバスHL制御
+    3 : GPIOのバス状態取得
+    4 : ADCでの測定開始
+    5 : ADCでの測定完了問い合わせ
+    6 : ADCでの測定結果取得
+
+5 異常系
+    I2C不具合以外の, コマンドコード不正, コマンドパラメータ不正については, 何も動作しない
+
