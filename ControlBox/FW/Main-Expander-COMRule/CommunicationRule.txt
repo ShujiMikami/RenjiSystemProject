@@ -2,6 +2,7 @@ MainMCU-GPIO_Expander間の通信ルール
 
 1 通信方式
     MainMCUをマスターとした, 100kHzのI2C通信とする
+    SADは, 0x5Eとする
 
 2 通信内容
     GPIOの個別HL制御
