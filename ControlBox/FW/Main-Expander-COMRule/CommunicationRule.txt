@@ -20,7 +20,7 @@ MainMCU-GPIO_Expander間の通信ルール
         M:COMMAND
         S:ACK
         M:PARAM
-        S:NACK
+        S:ACK
         M:STOP
 
     3.2 取得時
@@ -30,8 +30,10 @@ MainMCU-GPIO_Expander間の通信ルール
         S:ACK
         M:SAD+R(Repeated)
         S:ACK
-        S:DATA
+        S:DATA_H
         M:ACK
+        S:DATA_L
+        M:NACK
         M:STOP
 
 4 コマンドコード
