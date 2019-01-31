@@ -14,7 +14,7 @@
             "device": "LPC1114",
             "runToMain": true,
             "configFiles": [
-                "${env:OPENOCD_SCRIPT_DIR}/interface/stlink-v2.cfg",
+                "${env:OPENOCD_SCRIPT_DIR}/interface/jlink_swd.cfg",
                 "${env:OPENOCD_SCRIPT_DIR}/target/lpc11xxx_swd_flash.cfg"
             ],
             "preLaunchCommands": [
