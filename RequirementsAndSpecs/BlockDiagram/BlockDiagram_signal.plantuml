@@ -1,0 +1,49 @@
+@startuml
+
+title Block Diagram signal
+
+hide circle
+hide method
+hide empty members
+
+package "ControlBox"{
+  class "Main MCU" as BlockMainMCU <<block>>{
+  }
+  class "WiFi MCU" as BlockWiFiMCU <<block>>{
+  }
+  class "LCD" as BlockLCD <<block>>{
+  }
+  class "IndicatorLED" as BlockIndicatorLED <<block>>{
+  }
+  class "SSRSwitch" as BlockSSRSwitch <<block>>{
+  }
+  class "DCPowerCircuit" as BlockDCPowerCircuit <<block>>{
+  }
+
+  'MainMCUからI2CでLCD, WiFiと通信
+  BlockMainMCU -- BlockLCD : I2C
+  BlockMainMCU -- BlockWiFiMCU : I2C
+
+  'MainMCUからLEDをGPIOで制御
+  BlockMainMCU -- BlockIndicatorLED : DigitalOut
+
+  'MainMCUからSSRSwitchをGPIOで制御
+  BlockMainMCU -- BlockSSRSwitch : DigitalOut
+
+  'MainMCUからDigitalOutでLCD, WiFiMCUをリセット
+  BlockMainMCU -- BlockDCPowerCircuit : DigitalOut
+}
+
+class "Switch Board" as BlockSwitchBoard <<block>>{
+}
+
+
+class "Thermistor" as BlockThermistor <<block>>{
+}
+
+'MCUからSwitch BoardへDigitalIn接続
+BlockMainMCU -- BlockSwitchBoard : DigitalIn
+
+'MCUからThermistorへADC接続
+BlockMainMCU -- BlockThermistor : Analog
+@enduml
