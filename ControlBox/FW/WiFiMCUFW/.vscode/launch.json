@@ -12,7 +12,7 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "c:/Users/mm07860/workspace/ESP8266Test/GPIOTest/.pioenvs/esp_wroom_02/firmware.elf",
+            "executable": "c:/Users/mm07860/workspace/RenjiSystemProject/ControlBox/FW/WiFiMCUFW/.pioenvs/esp_wroom_02/firmware.elf",
             "toolchainBinDir": "",
             "preLaunchTask": {
                 "type": "PlatformIO",
@@ -24,7 +24,7 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "c:/Users/mm07860/workspace/ESP8266Test/GPIOTest/.pioenvs/esp_wroom_02/firmware.elf",
+            "executable": "c:/Users/mm07860/workspace/RenjiSystemProject/ControlBox/FW/WiFiMCUFW/.pioenvs/esp_wroom_02/firmware.elf",
             "toolchainBinDir": "",
             "internalConsoleOptions": "openOnSessionStart"
         }
