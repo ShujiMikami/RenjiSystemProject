@@ -6,7 +6,7 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./Debug/MainMCUFW.elf",
+            "executable": "./Debug/${workspaceRootFolderName}.elf",
             "name": "Debug Microcontroller",
             "request": "launch",
             "type": "cortex-debug",
