@@ -10,13 +10,9 @@
             "executable": "./BUILD/GPIO_Expander.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "servertype": "openocd",
+            "servertype": "pyocd",
             "device": "LPC1114",
             "runToMain": true,
-            "configFiles": [
-                "${env:OPENOCD_SCRIPT_DIR}/interface/jlink_swd.cfg",
-                "${env:OPENOCD_SCRIPT_DIR}/target/lpc11xxx_swd_flash.cfg"
-            ],
             "preLaunchCommands": [
                 "break main",
                 "monitor reset halt",
