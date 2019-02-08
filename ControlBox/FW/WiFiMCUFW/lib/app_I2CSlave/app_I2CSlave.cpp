@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#define THREAD_NAME "I2C_SLAVE_THREAD"
+
+
 #define MAX_RECIEVE_BUF_SIZE 255
 
 static const uint8_t SLAVE_ADDRESS = 8;
@@ -17,8 +20,10 @@ void I2CSlaveTask_initialize()
 }
 void I2CSlaveTask_loop()
 {
-    if(Wire.available){
+    if(Wire.available() > 0){
         buffer[bufferdLength++] = (uint8_t)Wire.read();
+        Serial.print(THREAD_NAME);
+        Serial.println(buffer[bufferdLength - 1]);
     }
 }
 void receiveHandler()
