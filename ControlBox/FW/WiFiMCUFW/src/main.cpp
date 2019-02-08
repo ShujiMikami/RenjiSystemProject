@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include "app_LEDToggle.h"
 #include "app_WiFiAPScan.h"
-#include "app_I2CSlave.h"
+//#include "app_I2CSlave.h"
+#include "app_SPIMaster.h"
 
 const uint32_t MESSAGE_DELAY = 1000;
 
@@ -14,7 +15,9 @@ void setup()
   LEDToggleTask_initialize();
   SerialTask_initialize();
   WiFiAPScanTask_initialize();
-  I2CSlaveTask_initialize();
+  //I2CSlaveTask_initialize();
+  SPIMasterTask_initialize();
+  
 }
 
 void loop()
@@ -22,7 +25,8 @@ void loop()
   // put your main code here, to run repeatedly:
   LEDToggleTask_loop();
   SerialTask_loop();
-  I2CSlaveTask_loop();
+  //I2CSlaveTask_loop();
+  SPIMasterTask_loop();
 }
 
 void SerialTask_initialize()

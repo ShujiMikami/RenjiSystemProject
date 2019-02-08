@@ -50,7 +50,8 @@
 #include "main.h"
 #include "stm32f3xx_hal.h"
 #include "cmsis_os.h"
-#include "i2c.h"
+#include "dma.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -107,11 +108,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
-  MX_I2C1_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t data[] = { 0x01, 0x02 };
-  HAL_I2C_Master_Transmit(&hi2c1, 8, data, sizeof(data), 1000);
+  uint8_t aTxBuffer[10] = {0};
+  uint8_t aRxBuffer[10] = {0};
+
+  
+  HAL_SPI_Receive_DMA(&hspi1, aRxBuffer, sizeof(aRxBuffer));
+
+  while(1){
+    //HAL_SPI_TransmitReceive(&hspi1, aTxBuffer, aRxBuffer, sizeof(aRxBuffer), 1000);
+
+    char message[] = "loop";
+    HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), 1000);
+    HAL_Delay(1000);
+  }
+  
 
   /* USER CODE END 2 */
 
@@ -146,7 +160,6 @@ void SystemClock_Config(void)
 
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_PeriphCLKInitTypeDef PeriphClkInit;
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
@@ -169,13 +182,6 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
-  PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
