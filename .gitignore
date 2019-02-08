@@ -15,3 +15,4 @@ RequirementsAndSpecs/RequirementDiagram/RequirementsDiagram.plantuml~
 ControlBox/FW/WiFiMCUFW/.vscode/.BROWSE.C_CPP.DB-wal
 ControlBox/FW/WiFiMCUFW/.vscode/.BROWSE.C_CPP.DB-shm
 ControlBox/FW/MainMCUFW/Debug/
+ControlBox/FW/GPIO_Expander/BUILD/
