@@ -1,0 +1,71 @@
+@startuml
+
+title Block Diagram power
+
+hide circle
+hide method
+hide empty members
+
+class "AC100V" as BlockAC100V <<block>>{
+}
+class "MainSwitch" as BlockMainSwitch <<block>>{
+}
+package "ControlBox"{
+  class "Main MCU" as BlockMainMCU <<block>>{
+  }
+  class "WiFi MCU" as BlockWiFiMCU <<block>>{
+  }
+  class "LCD" as BlockLCD <<block>>{
+  }
+  class "IndicatorLED" as BlockIndicatorLED <<block>>{
+  }
+  class "DCPowerCircuit" as BlockDCPowerCircuit <<block>>{
+  }
+  class "SSRSwitch" as BlockSSRSwitch <<block>>{
+  }
+  
+  'DCPowerCircuitから3.3VをメインとWiFiに供給
+  BlockDCPowerCircuit -- BlockMainMCU : 3.3V
+  BlockDCPowerCircuit -- BlockWiFiMCU : 3.3V
+
+  'DCPowerCircuitから5VをLCDとLEDに供給
+  BlockDCPowerCircuit -u- BlockLCD : 5V
+  BlockDCPowerCircuit -u- BlockIndicatorLED : 5V
+}
+class "Switch Board" as BlockSwitchBoard <<block>>{
+}
+
+class "Thermistor" as BlockThermistor <<block>>{
+}
+class "UVLight" as BlockUVLight <<block>>{
+}
+class "Heater" as BlockHeater <<block>>{
+}
+class "Fan" as BlockFan <<block>>{
+}
+
+'AC100Vからヒューズを介してスイッチに接続
+BlockAC100V -- BlockMainSwitch : Fuse(3A)
+
+'スイッチからヒューズを介してDCPowerCircuitに接続
+BlockMainSwitch -- BlockDCPowerCircuit : Fuse(1A)
+
+'ACスイッチからヒューズを介してFan, UV, Heaterに接続
+BlockMainSwitch -- BlockFan : Fuse(1A)
+BlockMainSwitch -- BlockUVLight : Fuse(1A)
+BlockMainSwitch -- BlockHeater : Fuse(2A)
+
+'AC100Vから直接SSRSwitchに接続　
+BlockAC100V "1"--"3" BlockSSRSwitch
+
+'SSRSwitchからUV, Heater, Fanに接続
+BlockSSRSwitch -- BlockFan
+BlockSSRSwitch -- BlockUVLight
+BlockSSRSwitch -- BlockHeater
+
+'DCPowersupplyからThermistorへ3.3V供給
+BlockDCPowerCircuit -r- BlockThermistor : 3.3V
+
+'DCPowersupplyからSwitchBoardへ3.3V供給
+BlockDCPowerCircuit -- BlockSwitchBoard : 3.3V
+@enduml
