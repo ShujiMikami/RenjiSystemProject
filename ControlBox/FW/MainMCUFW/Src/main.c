@@ -110,6 +110,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  uint8_t data[] = { 0x01, 0x02 };
+  HAL_I2C_Master_Transmit(&hi2c1, 8, data, sizeof(data), 1000);
 
   /* USER CODE END 2 */
 
