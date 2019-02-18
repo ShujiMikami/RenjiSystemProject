@@ -19,6 +19,9 @@ int main()
     i2cSlave.frequency(I2C_FREQ);
 
     while(1) {
+        printf("test");
+
+        wait(1);
         
     }
 }
