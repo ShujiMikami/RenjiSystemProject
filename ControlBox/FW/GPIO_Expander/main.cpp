@@ -5,6 +5,11 @@
 #define I2C_SAD 0x5E
 #define I2C_FREQ 100000
 
+#define SERIAL_BAUD_RATE 115200
+
+//
+Serial uart(USBTX, USBRX, SERIAL_BAUD_RATE);
+
 //Start I2C Slave
 I2CSlave i2cSlave(I2C_SDA_PIN, I2C_SCL_PIN);
 
@@ -19,7 +24,7 @@ int main()
     i2cSlave.frequency(I2C_FREQ);
 
     while(1) {
-        printf("test");
+        uart.printf("test");
 
         wait(1);
         
