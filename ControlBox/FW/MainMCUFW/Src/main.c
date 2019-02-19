@@ -63,6 +63,7 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+osThreadId SPITaskHandle;
 
 /* USER CODE END PV */
 
@@ -72,6 +73,7 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void StartSPITask(const void* argument);
 
 /* USER CODE END PFP */
 
@@ -112,20 +114,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t aTxBuffer[10] = {0};
-  uint8_t aRxBuffer[10] = {0};
-
-  
-  HAL_SPI_Receive_DMA(&hspi1, aRxBuffer, sizeof(aRxBuffer));
-
-  while(1){
-    //HAL_SPI_TransmitReceive(&hspi1, aTxBuffer, aRxBuffer, sizeof(aRxBuffer), 1000);
-
-    char message[] = "loop";
-    HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), 1000);
-    HAL_Delay(1000);
-  }
-  
+  osThreadDef(SPITask, StartSPITask, osPriorityAboveNormal, 0, 128);
+  SPITaskHandle = osThreadCreate(osThread(SPITask), NULL);
 
   /* USER CODE END 2 */
 
@@ -199,7 +189,24 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void StartSPITask(const void* argument)
+{
+  uint8_t aTxBuffer[10] = {0};
+  uint8_t aRxBuffer[10] = {0};
+  
+  HAL_SPI_Receive_DMA(&hspi1, aRxBuffer, sizeof(aRxBuffer));
 
+  char message[] = "loop";
+
+  while(1){
+    /* code */
+    HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), 1000);
+    HAL_Delay(1000);
+  }
+
+  
+   
+}
 /* USER CODE END 4 */
 
 /**
