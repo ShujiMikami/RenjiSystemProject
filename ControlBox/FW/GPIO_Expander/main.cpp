@@ -24,7 +24,7 @@ int main()
     i2cSlave.frequency(I2C_FREQ);
 
     while(1) {
-        uart.printf("test");
+        uart.printf("test\r\n");
 
         wait(1);
         
