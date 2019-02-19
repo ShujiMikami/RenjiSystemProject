@@ -105,7 +105,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  printfMessageQueue = xQueueCreate(10, 25);
+  printfMessageQueue = xQueueCreate(10, 20);
 
   /* USER CODE END Init */
 
@@ -226,7 +226,6 @@ void Printf4Debug(const char* format, ...)
 
   va_start(ap, format);
 
-//  sprintf_s(bufToSend, 20, format, ap);
   volatile int charLength = sprintf(bufToSend, format, ap);
 
   va_end(ap);
@@ -240,8 +239,9 @@ void Printf4Debug(const char* format, ...)
   int cnt = 0;
 
   for(cnt = 0; cnt < queueCount; cnt++){
-    char bufPart[5];
-    strncpy(bufPart, &bufToSend[5 * cnt], 5);
+    char bufPart[20];
+    strncpy(bufPart, &bufToSend[(20 - 1) * cnt], (20 - 1));
+    bufPart[20 - 1] = '\0';
 
     xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
   }
@@ -258,14 +258,15 @@ void StartPrintfTask(const void* argument)
 }
 void StartMessageTask(const void* argument)
 {
+
+  static char msg_buffer[256];
   while(1){
-    char msg_buffer[256];
 
     vTaskList(msg_buffer);
 
     Printf4Debug(msg_buffer);
+    Printf4Debug("\r\n");
 
-    //Printf4Debug("message\r\n");
     osDelay(1000);
   }
 }
