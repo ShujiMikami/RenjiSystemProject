@@ -56,7 +56,9 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -64,7 +66,9 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 osThreadId SPITaskHandle;
-
+xQueueHandle printfMessageQueue;
+osThreadId PrintfTaskhandle;
+osThreadId MessageTaskHandle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +78,9 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 void StartSPITask(const void* argument);
+void Printf4Debug(const char* format, ...);
+void StartPrintfTask(const void* argument);
+void StartMessageTask(const void* argument);
 
 /* USER CODE END PFP */
 
@@ -98,6 +105,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  printfMessageQueue = xQueueCreate(10, 25);
 
   /* USER CODE END Init */
 
@@ -114,8 +122,11 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  osThreadDef(SPITask, StartSPITask, osPriorityAboveNormal, 0, 128);
-  SPITaskHandle = osThreadCreate(osThread(SPITask), NULL);
+  osThreadDef(PrintfTask, StartPrintfTask, osPriorityNormal, 0, 128);
+  PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
+  
+  osThreadDef(MessageTask, StartMessageTask, osPriorityNormal, 0, 128);
+  MessageTaskHandle = osThreadCreate(osThread(MessageTask), NULL);
 
   /* USER CODE END 2 */
 
@@ -206,6 +217,57 @@ void StartSPITask(const void* argument)
 
   
    
+}
+void Printf4Debug(const char* format, ...)
+{
+  static char bufToSend[280];
+
+  va_list ap;
+
+  va_start(ap, format);
+
+//  sprintf_s(bufToSend, 20, format, ap);
+  volatile int charLength = sprintf(bufToSend, format, ap);
+
+  va_end(ap);
+
+  volatile int queueCount = charLength / 20;
+
+  if((charLength % 20) != 0){
+    queueCount += 1;
+  }
+
+  int cnt = 0;
+
+  for(cnt = 0; cnt < queueCount; cnt++){
+    char bufPart[5];
+    strncpy(bufPart, &bufToSend[5 * cnt], 5);
+
+    xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
+  }
+}
+void StartPrintfTask(const void* argument)
+{
+  char buffer[20];
+
+  while(1){
+    xQueueReceive(printfMessageQueue, buffer, portMAX_DELAY);
+
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 1000);
+  }
+}
+void StartMessageTask(const void* argument)
+{
+  while(1){
+    char msg_buffer[256];
+
+    vTaskList(msg_buffer);
+
+    Printf4Debug(msg_buffer);
+
+    //Printf4Debug("message\r\n");
+    osDelay(1000);
+  }
 }
 /* USER CODE END 4 */
 
