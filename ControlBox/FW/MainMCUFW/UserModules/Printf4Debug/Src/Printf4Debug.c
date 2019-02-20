@@ -16,6 +16,8 @@
 xQueueHandle printfMessageQueue;
 osThreadId PrintfTaskhandle;
 
+static void startPrintfTask(const void* argument);
+
 void Printf4Debug(const char* format, ...)
 {
   static char bufToSend[QUEUE_BUFFER_SIZE];
@@ -44,7 +46,7 @@ void Printf4Debug(const char* format, ...)
     xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
   }
 }
-void StartPrintfTask(const void* argument)
+void startPrintfTask(const void* argument)
 {
   char buffer[QUEUE_SIZE];
 
@@ -59,6 +61,6 @@ void PrintfInit()
 {
     printfMessageQueue = xQueueCreate(QUEUE_DEPTH, QUEUE_SIZE);
     
-    osThreadDef(PrintfTask, StartPrintfTask, osPriorityNormal, 0, 128);
+    osThreadDef(PrintfTask, startPrintfTask, osPriorityNormal, 0, 128);
     PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
 }
