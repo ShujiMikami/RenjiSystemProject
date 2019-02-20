@@ -73,7 +73,7 @@ Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
 Middlewares/Third_Party/FreeRTOS/Source/timers.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
 Src/dma.c \
-Src/Printf4Debug.c
+UserModules/Printf4Debug/Src/Printf4Debug.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -138,7 +138,8 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Device/ST/STM32F3xx/Include \
 -IMiddlewares/Third_Party/FreeRTOS/Source/include \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IUserModules/Printf4Debug/Inc
 
 
 # compile gcc flags

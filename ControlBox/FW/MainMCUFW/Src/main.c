@@ -56,9 +56,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
+#include "Printf4Debug.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -66,8 +64,6 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 osThreadId SPITaskHandle;
-xQueueHandle printfMessageQueue;
-osThreadId PrintfTaskhandle;
 osThreadId MessageTaskHandle;
 /* USER CODE END PV */
 
@@ -78,8 +74,6 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 void StartSPITask(const void* argument);
-void Printf4Debug(const char* format, ...);
-void StartPrintfTask(const void* argument);
 void StartMessageTask(const void* argument);
 
 /* USER CODE END PFP */
@@ -105,7 +99,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  printfMessageQueue = xQueueCreate(10, 20);
 
   /* USER CODE END Init */
 
@@ -122,8 +115,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  osThreadDef(PrintfTask, StartPrintfTask, osPriorityNormal, 0, 128);
-  PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
+  PrintfInit();
   
   osThreadDef(MessageTask, StartMessageTask, osPriorityNormal, 0, 128);
   MessageTaskHandle = osThreadCreate(osThread(MessageTask), NULL);
@@ -213,47 +205,6 @@ void StartSPITask(const void* argument)
     /* code */
     HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), 1000);
     HAL_Delay(1000);
-  }
-
-  
-   
-}
-void Printf4Debug(const char* format, ...)
-{
-  static char bufToSend[280];
-
-  va_list ap;
-
-  va_start(ap, format);
-
-  volatile int charLength = sprintf(bufToSend, format, ap);
-
-  va_end(ap);
-
-  volatile int queueCount = charLength / 20;
-
-  if((charLength % 20) != 0){
-    queueCount += 1;
-  }
-
-  int cnt = 0;
-
-  for(cnt = 0; cnt < queueCount; cnt++){
-    char bufPart[20];
-    strncpy(bufPart, &bufToSend[(20 - 1) * cnt], (20 - 1));
-    bufPart[20 - 1] = '\0';
-
-    xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
-  }
-}
-void StartPrintfTask(const void* argument)
-{
-  char buffer[20];
-
-  while(1){
-    xQueueReceive(printfMessageQueue, buffer, portMAX_DELAY);
-
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 1000);
   }
 }
 void StartMessageTask(const void* argument)
