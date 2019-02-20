@@ -18,7 +18,7 @@ osThreadId GPIOWriteTaskhandle;
 
 static uint32_t period_ms = 10;
 static uint32_t stableCount = 10;
-#define STABLE_COUNT_LIMIT (2 * stableCount);
+#define STABLE_COUNT_LIMIT (2 * stableCount)
 
 static void start_GPIO_Write_Task(const void* argument);
 
@@ -37,13 +37,13 @@ void APP_GPIO_Write(GPIO_TypeDef* gpioPort, uint16_t gpioPin, GPIO_PinState gpio
     queueItem.gpioPin = gpioPin;
     queueItem.gpioState = gpioState;
 
-    xQueueSendToBack(GPIOWriteQueue, queueItem, portMAX_DELAY);
+    xQueueSendToBack(GPIOWriteQueue, &queueItem, portMAX_DELAY);
 }
-GPIO_PinState APP_GPIO_Read(GPIO_TypeDef* gpioPort, uint16_t gpioPin, bool antiChattering)
+GPIO_PinState APP_GPIO_Read(GPIO_TypeDef* gpioPort, uint16_t gpioPin, boolean_t antiChattering)
 {
     GPIO_PinState result = HAL_GPIO_ReadPin(gpioPort, gpioPin);
 
-    if(antiChattering){
+    if(antiChattering == TRUE){
         uint32_t count = 0;
         uint32_t count_OK = 0;
 
