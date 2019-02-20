@@ -72,7 +72,8 @@ Middlewares/Third_Party/FreeRTOS/Source/queue.c \
 Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
 Middlewares/Third_Party/FreeRTOS/Source/timers.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
-Src/dma.c
+Src/dma.c \
+Src/Printf4Debug.c
 
 # ASM sources
 ASM_SOURCES =  \
