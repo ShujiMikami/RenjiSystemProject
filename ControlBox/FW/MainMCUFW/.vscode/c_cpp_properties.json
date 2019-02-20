@@ -16,10 +16,7 @@
         {
             "name": "Win32",
             "defines": [],
-            "macFrameworkPath": [
-                "/System/Library/Frameworks",
-                "/Library/Frameworks"
-            ],
+            "windowsSdkVersion": "8.1",
             "compilerPath": "arm-none-eabi-gcc",
             "cStandard": "c99",
             "cppStandard": "c++11",
