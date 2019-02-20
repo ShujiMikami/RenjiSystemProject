@@ -4,3 +4,4 @@
 
 void Printf4Debug(const char* format, ...);
 void StartPrintfTask(const void* argument);
+void PrintfInit();

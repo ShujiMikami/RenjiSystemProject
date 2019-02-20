@@ -10,6 +10,7 @@
 
 #define QUEUE_DEPTH 10
 #define QUEUE_SIZE 20
+#define QUEUE_BUFFER_SIZE (QUEUE_DEPTH * QUEUE_SIZE)
 
 
 xQueueHandle printfMessageQueue;
@@ -17,7 +18,7 @@ osThreadId PrintfTaskhandle;
 
 void Printf4Debug(const char* format, ...)
 {
-  static char bufToSend[280];
+  static char bufToSend[QUEUE_BUFFER_SIZE];
 
   va_list ap;
 
@@ -42,12 +43,9 @@ void Printf4Debug(const char* format, ...)
 
     xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
   }
-
 }
 void StartPrintfTask(const void* argument)
 {
-  printfMessageQueue = xQueueCreate(QUEUE_DEPTH, QUEUE_SIZE);
-  
   char buffer[QUEUE_SIZE];
 
   while(1){
@@ -55,4 +53,12 @@ void StartPrintfTask(const void* argument)
 
     HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 1000);
   }
+}
+
+void PrintfInit()
+{
+    printfMessageQueue = xQueueCreate(QUEUE_DEPTH, QUEUE_SIZE);
+    
+    osThreadDef(PrintfTask, StartPrintfTask, osPriorityNormal, 0, 128);
+    PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
 }
