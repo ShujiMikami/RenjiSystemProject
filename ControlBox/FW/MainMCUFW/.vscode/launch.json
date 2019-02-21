@@ -13,7 +13,9 @@
             "servertype": "openocd",
             "configFiles": [
                 "${env:OPENOCD_SCRIPT_DIR}/board/st_nucleo_f3.cfg"
-            ]
+            ],
+            "preLaunchTask": "build all"
+            
         }
     ]
 }
