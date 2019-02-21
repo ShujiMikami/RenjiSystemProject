@@ -57,6 +57,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "Printf4Debug.h"
+#include "APP_GPIO.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -116,6 +117,8 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   PrintfInit();
+  APP_GPIO_Init();
+
   
   osThreadDef(MessageTask, StartMessageTask, osPriorityNormal, 0, 128);
   MessageTaskHandle = osThreadCreate(osThread(MessageTask), NULL);
