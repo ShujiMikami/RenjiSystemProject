@@ -70,9 +70,10 @@ GPIO_PinState APP_GPIO_Read(GPIO_TypeDef* gpioPort, uint16_t gpioPin, boolean_t 
     
     return result;
 }
-void APP_GPIO_SetChatteringParam(uint32_t period_ms, uint32_t bufferingTime_ms)
+void APP_GPIO_SetChatteringParam(uint32_t period_ms_to_set, uint32_t stableCount_to_set)
 {
-
+    period_ms = period_ms_to_set;
+    stableCount = stableCount_to_set;
 }
 void start_GPIO_Write_Task(const void* argument)
 {
