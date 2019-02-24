@@ -13,6 +13,8 @@ const String TASK_NAME = "LEDTask";
 static void LEDToggle();
 static void LEDToggleRoutine();
 
+static TaskMessager messager(TASK_NAME, "Running.", MESSAGE_DELAY);
+
 void LEDToggle()
 {
   static uint8_t value = LOW;
@@ -40,10 +42,9 @@ void LEDToggleRoutine()
 void LEDToggleTask_initialize()
 {
   pinMode(LED_PIN, OUTPUT);
-  TaskMessagerInitialize();
 }
 void LEDToggleTask_loop()
 {
   LEDToggleRoutine();
-  TaskMessage(TASK_NAME, "Running", MESSAGE_DELAY);
+  messager.routine();
 }
