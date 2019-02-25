@@ -41,3 +41,11 @@ void SPIMasterTask_loop()
 
     delay(1000);
 }
+void SPIMasterSendRead(uint8_t* sendData, uint8_t* receiveBuf, uint16_t dataLength)
+{
+
+}
+void SPIMaster_initialize(const uint8_t slavePin, SPISettings setting)
+{
+
+}
