@@ -12,7 +12,16 @@ uint8_t rxBytes[12];
 const uint8_t testBytes2[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
 const int sendBytes = 10;
 
+static uint8_t sendBuffer[128];
+static uint8_t receiveBuffer[128];
+static uint8_t slaveSelectPin = 5;
+static SPISettings spiSettings;
 
+void SPIMaster_initialize(const uint8_t slavePin, SPISettings setting)
+{
+    slaveSelectPin = slavePin;
+    spiSettings = setting;
+}
 void SPIMasterTask_initialize()
 {
     pinMode(SLAVE_SELECT_PIN, OUTPUT);
@@ -43,9 +52,21 @@ void SPIMasterTask_loop()
 }
 void SPIMasterSendRead(uint8_t* sendData, uint8_t* receiveBuf, uint16_t dataLength)
 {
+    for(int i = 0; i < dataLength; i++){
+        sendBuffer[i] = sendData[i];
+    }
 
-}
-void SPIMaster_initialize(const uint8_t slavePin, SPISettings setting)
-{
+    SPI.beginTransaction(spiSettings);
 
+    digitalWrite(slaveSelectPin, LOW);
+    
+    SPI.transferBytes(sendData, receiveBuffer, dataLength);
+    
+    digitalWrite(slaveSelectPin, HIGH);
+
+    SPI.endTransaction();
+
+    for(int i = 0; i < dataLength; i++){
+        receiveBuf[i] = receiveBuffer[i];
+    }
 }
