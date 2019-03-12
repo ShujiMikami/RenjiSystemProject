@@ -64,7 +64,18 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 osThreadId MessageTaskHandle;
+
+#define UART_RX_QUEUE_DEPTH 300
+#define UART_TX_QUEUE_DEPTH 5
+#define UART_RX_QUEUE_SIZE 1
+#define UART_TX_QUEUE_SIZE 20
+#define UART_RX_QUEUE_BUFFER_SIZE (UART_RX_QUEUE_DEPTH * UART_RX_QUEUE_SIZE)
+#define UART_TX_QUEUE_BUFFER_SIZE (UART_TX_QUEUE_DEPTH * UART_TX_QUEUE_SIZE)
+
 osThreadId UartRXTaskHandle;
+osThreadId UartTXTaskHandle;
+xQueueHandle UartRxQueue;
+xQueueHandle UartTxQueue;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,6 +86,9 @@ void MX_FREERTOS_Init(void);
 /* Private function prototypes -----------------------------------------------*/
 void StartMessageTask(const void* argument);
 void StartUartRXTask(const void* argument);
+void StartUartTxTask(const void* argument);
+int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength);
+void UARTSendData(uint8_t* data, uint16_t dataLength);
 
 /* USER CODE END PFP */
 
