@@ -251,11 +251,17 @@ void StartUartRXTask(const void* argument)
   while(1){
   }
 }
-void StartUartTxTask(const void* argument)
+void StartUartTXTask(const void* argument)
 {
 }
 int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
 {
+  int result = 0;
+
+  int cnt = 0;
+  for(cnt = 0; cnt < bufferLength; cnt++){
+    xQueueReceive(UartRxQueue, buffer, 0);
+  }
 
 }
 void UARTSendData(uint8_t* data, uint16_t dataLength)
