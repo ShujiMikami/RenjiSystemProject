@@ -18,3 +18,4 @@ ControlBox/FW/MainMCUFW/Debug/
 ControlBox/FW/GPIO_Expander/BUILD/
 settings.json
 compile_commands.json
+ControlBox/FW/MainMCUFW/gcc-defines.txt

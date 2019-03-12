@@ -1,4 +1,3 @@
-
 /**
   ******************************************************************************
   * @file           : main.c
@@ -60,7 +59,6 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 osThreadId MessageTaskHandle;
@@ -71,6 +69,7 @@ osThreadId MessageTaskHandle;
 #define UART_TX_QUEUE_SIZE 20
 #define UART_RX_QUEUE_BUFFER_SIZE (UART_RX_QUEUE_DEPTH * UART_RX_QUEUE_SIZE)
 #define UART_TX_QUEUE_BUFFER_SIZE (UART_TX_QUEUE_DEPTH * UART_TX_QUEUE_SIZE)
+
 
 osThreadId UartRXTaskHandle;
 osThreadId UartTXTaskHandle;
@@ -86,14 +85,13 @@ void MX_FREERTOS_Init(void);
 /* Private function prototypes -----------------------------------------------*/
 void StartMessageTask(const void* argument);
 void StartUartRXTask(const void* argument);
-void StartUartTxTask(const void* argument);
+void StartUartTXTask(const void* argument);
 int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength);
 void UARTSendData(uint8_t* data, uint16_t dataLength);
-
+void UARTInit();
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -231,10 +229,37 @@ void StartMessageTask(const void* argument)
     osDelay(1000);
   }
 }
+void UARTInit()
+{
+  UartRxQueue = xQueueCreate(UART_RX_QUEUE_DEPTH, UART_RX_QUEUE_SIZE);
+  UartTxQueue = xQueueCreate(UART_TX_QUEUE_DEPTH, UART_TX_QUEUE_SIZE);
+  
+  //RXTaskスタート
+  osThreadDef(UARTRXTask, StartUartRXTask, osPriorityNormal, 0, 128);
+  UartRXTaskHandle = osThreadCreate(osThread(UARTRXTask), NULL);
+
+  //TXTaskスタート
+  osThreadDef(UARTTXTask, StartUartTXTask, osPriorityNormal, 0, 128);
+  UartTXTaskHandle = osThreadCreate(osThread(UARTTXTask), NULL);
+}
 void StartUartRXTask(const void* argument)
+{
+  static uint8_t receiveBuffer[10];
+
+  HAL_UART_Receive_DMA(&huart1, receiveBuffer, sizeof(receiveBuffer));
+
+  while(1){
+  }
+}
+void StartUartTxTask(const void* argument)
+{
+}
+int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
 {
 
 }
+void UARTSendData(uint8_t* data, uint16_t dataLength)
+{}
 /* USER CODE END 4 */
 
 /**
