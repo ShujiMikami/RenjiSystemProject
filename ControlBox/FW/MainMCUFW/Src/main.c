@@ -51,7 +51,6 @@
 #include "stm32f3xx_hal.h"
 #include "cmsis_os.h"
 #include "dma.h"
-#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -64,8 +63,8 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-osThreadId SPITaskHandle;
 osThreadId MessageTaskHandle;
+osThreadId UartRXTaskHandle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,8 +73,8 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void StartSPITask(const void* argument);
 void StartMessageTask(const void* argument);
+void StartUartRXTask(const void* argument);
 
 /* USER CODE END PFP */
 
@@ -114,7 +113,7 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART2_UART_Init();
-  MX_SPI1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   PrintfInit();
   APP_GPIO_Init();
@@ -156,6 +155,7 @@ void SystemClock_Config(void)
 
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_PeriphCLKInitTypeDef PeriphClkInit;
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
@@ -182,6 +182,13 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
     /**Configure the Systick interrupt time 
     */
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
@@ -195,34 +202,24 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void StartSPITask(const void* argument)
-{
-  uint8_t aTxBuffer[10] = {0};
-  uint8_t aRxBuffer[10] = {0};
-  
-  HAL_SPI_Receive_DMA(&hspi1, aRxBuffer, sizeof(aRxBuffer));
-
-  char message[] = "loop";
-
-  while(1){
-    /* code */
-    HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), 1000);
-    HAL_Delay(1000);
-  }
-}
 void StartMessageTask(const void* argument)
 {
-
   static char msg_buffer[256];
   while(1){
 
+    //タスクの実行状態を取得
     vTaskList(msg_buffer);
 
+    //標準出力に表示
     Printf4Debug(msg_buffer);
     Printf4Debug("\r\n");
 
     osDelay(1000);
   }
+}
+void StartUartRXTask(const void* argument)
+{
+
 }
 /* USER CODE END 4 */
 
