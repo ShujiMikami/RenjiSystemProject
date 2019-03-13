@@ -77,6 +77,8 @@ osThreadId UartRXTaskHandle;
 osThreadId UartTXTaskHandle;
 xQueueHandle UartRxQueue;
 xQueueHandle UartTxQueue;
+
+static int bufferEdgePassCnt = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -288,6 +290,10 @@ int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
 }
 void UARTSendData(uint8_t* data, uint16_t dataLength)
 {}
+void HAL_UART_TxHalfCpltCallback(UART_HandleTypeDef *huart)
+{
+  bufferEdgePassCnt++;
+}
 /* USER CODE END 4 */
 
 /**
