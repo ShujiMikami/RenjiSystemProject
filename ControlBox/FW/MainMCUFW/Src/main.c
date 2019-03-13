@@ -1,3 +1,4 @@
+
 /**
   ******************************************************************************
   * @file           : main.c
@@ -59,6 +60,7 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 osThreadId MessageTaskHandle;
@@ -244,11 +246,31 @@ void UARTInit()
 }
 void StartUartRXTask(const void* argument)
 {
-  static uint8_t receiveBuffer[10];
+  static uint8_t receiveBuffer[40];
 
   HAL_UART_Receive_DMA(&huart1, receiveBuffer, sizeof(receiveBuffer));
 
+  int readPosition = 0;
+  int writePosition = 0;
+  int dataCount = 0;
+
   while(1){
+    int lastDataPosition = __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+
+    if(lastDataPosition > readPosition){//データ書き込み位置がバッファ内で最後に読んだ場所よりも上位にある
+      dataCount = lastDataPosition - readPosition;
+    }
+    else if(lastDataPosition < readPosition){//データ書き込み位置がバッファの終端を超えてしまった場合
+      dataCount = lastDataPosition + 40 - readPosition;
+    }
+    else{//データ書き込み位置に変化がない場合
+      //Do nothing
+    }
+   
+    int cnt = 0;
+    for(cnt = 0; cnt < dataCount; cnt++){
+      xQueueSendToBack(UartRxQueue, &receiveBuffer[(readPosition + cnt) % 40], 0);
+    }   
   }
 }
 void StartUartTXTask(const void* argument)
