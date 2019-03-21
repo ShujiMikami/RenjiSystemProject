@@ -277,6 +277,13 @@ void StartUartRXTask(const void* argument)
 }
 void StartUartTXTask(const void* argument)
 {
+  char buffer[UART_TX_QUEUE_BUFFER_SIZE];
+
+  while(1){
+    xQueueReceive(UartTxQueue, buffer, portMAX_DELAY);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), 1000);
+  }
 }
 int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
 {
