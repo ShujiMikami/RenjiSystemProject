@@ -21,3 +21,6 @@ compile_commands.json
 ControlBox/FW/MainMCUFW/gcc-defines.txt
 *.ipch
 ControlBox/FW/MainMCUFW/.vscode/ipch
+.cortex-debug.peripherals.state.json
+.cortex-debug.registers.state.json
+ControlBox/FW/WiFiMCUFW/.vscode/ipch

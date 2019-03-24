@@ -134,6 +134,8 @@ int main(void)
   PrintfInit();
   APP_GPIO_Init();
 
+  UARTInit();
+
   
   osThreadDef(MessageTask, StartMessageTask, osPriorityNormal, 0, 128);
   MessageTaskHandle = osThreadCreate(osThread(MessageTask), NULL);
