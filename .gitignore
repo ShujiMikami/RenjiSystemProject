@@ -18,3 +18,9 @@ ControlBox/FW/MainMCUFW/Debug/
 ControlBox/FW/GPIO_Expander/BUILD/
 settings.json
 compile_commands.json
+ControlBox/FW/MainMCUFW/gcc-defines.txt
+*.ipch
+ControlBox/FW/MainMCUFW/.vscode/ipch
+.cortex-debug.peripherals.state.json
+.cortex-debug.registers.state.json
+ControlBox/FW/WiFiMCUFW/.vscode/ipch

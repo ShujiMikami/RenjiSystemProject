@@ -9,14 +9,10 @@ const String TASK_NAME = "MainTask";
 
 TaskMessager messager(TASK_NAME, "Running.", MESSAGE_DELAY);
 
-const uint8_t SLAVE_SELECT_PIN = 5;
-
 void setup() 
 {
   // put your setup code here, to run once:
   LEDToggleTask_initialize();
-  //SPIMasterTask_initialize();
-  SPIMaster_initialize(SLAVE_SELECT_PIN, SPISettings(100000, MSBFIRST, SPI_MODE0));
 }
 
 void loop()
@@ -26,6 +22,5 @@ void loop()
   
 
   LEDToggleTask_loop();
-  //SPIMasterTask_loop();
 }
 
