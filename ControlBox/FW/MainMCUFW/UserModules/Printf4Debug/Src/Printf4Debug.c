@@ -17,11 +17,11 @@ xQueueHandle printfMessageQueue;
 osThreadId PrintfTaskhandle;
 
 static void startPrintfTask(const void* argument);
-static int isInitialized = 0;
+static Printf4Debug_Stauts_t taskStatus = Printf4Debug_STANDBY;
 
 void Printf4Debug(const char* format, ...)
 {
-  if(isInitialized != 0){
+  if(taskStatus != Printf4Debug_RUNNING){
     //不定長変数の処理
     static char bufToSend[QUEUE_BUFFER_SIZE];
 
@@ -58,18 +58,32 @@ void startPrintfTask(const void* argument)
   while(1){
     xQueueReceive(printfMessageQueue, buffer, portMAX_DELAY);
 
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 1000);
+    if(HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 1000) != HAL_OK){
+      taskStatus = Printf4Debug_ERROR_STOPPED;
+    }
+
+    if(taskStatus != Printf4Debug_RUNNING){
+      break;
+    }
   }
 }
-
 void PrintfInit()
 {
-  if(isInitialized == 0){
+  if(taskStatus != Printf4Debug_RUNNING){
     printfMessageQueue = xQueueCreate(QUEUE_DEPTH, QUEUE_SIZE);
     
     osThreadDef(PrintfTask, startPrintfTask, osPriorityNormal, 0, 128);
     PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
 
-    isInitialized = 1;
+    if(PrintfTaskhandle != NULL){
+      taskStatus = Printf4Debug_RUNNING;
+    }
+    else{
+      taskStatus = Printf4Debug_ERROR_STOPPED;
+    }
   }
+}
+Printf4Debug_Stauts_t GetStatus_Printf4Debug()
+{
+  return taskStatus;
 }
