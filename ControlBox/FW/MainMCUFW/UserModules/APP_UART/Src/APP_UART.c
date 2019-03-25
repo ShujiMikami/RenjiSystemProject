@@ -23,19 +23,31 @@ xQueueHandle UartTxQueue;
 
 static int bufferEdgePassCnt = 0;
 
+static APP_UART_Stauts_t taskStatus = APP_UART_STANDBY;
+
 void UARTInit()
 {
-  UartRxQueue = xQueueCreate(UART_RX_QUEUE_DEPTH, UART_RX_QUEUE_SIZE);
-  UartTxQueue = xQueueCreate(UART_TX_QUEUE_DEPTH, UART_TX_QUEUE_SIZE);
-  
-  //RXTaskスタート
-  osThreadDef(UARTRXTask, StartUartRXTask, osPriorityNormal, 0, 128);
-  UartRXTaskHandle = osThreadCreate(osThread(UARTRXTask), NULL);
+  if(taskStatus != APP_UART_RUNNING){
+    UartRxQueue = xQueueCreate(UART_RX_QUEUE_DEPTH, UART_RX_QUEUE_SIZE);
+    UartTxQueue = xQueueCreate(UART_TX_QUEUE_DEPTH, UART_TX_QUEUE_SIZE);
 
-  //TXTaskスタート
-  osThreadDef(UARTTXTask, StartUartTXTask, osPriorityNormal, 0, 128);
-  UartTXTaskHandle = osThreadCreate(osThread(UARTTXTask), NULL);
+    //RXTaskスタート
+    osThreadDef(UARTRXTask, StartUartRXTask, osPriorityNormal, 0, 128);
+    UartRXTaskHandle = osThreadCreate(osThread(UARTRXTask), NULL);
+
+    //TXTaskスタート
+    osThreadDef(UARTTXTask, StartUartTXTask, osPriorityNormal, 0, 128);
+    UartTXTaskHandle = osThreadCreate(osThread(UARTTXTask), NULL);
+
+    if(UartTXTaskHandle != NULL && UartRXTaskHandle != NULL){
+      taskStatus = APP_UART_RUNNING;
+    }
+    else{
+      taskStatus = APP_UART_ERROR_STOPPED;
+    }
+  }
 }
+
 void StartUartRXTask(const void* argument)
 {
   static uint8_t receiveBuffer[UART_RECEIVE_BUFFER_SIZE];
@@ -47,22 +59,35 @@ void StartUartRXTask(const void* argument)
   int dataCount = 0;
 
   while(1){
-    int lastDataPosition = __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+    int lastDataPosition = UART_RECEIVE_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx) - 1;
 
-    if(lastDataPosition > readPosition){//データ書き込み位置がバッファ内で最後に読んだ場所よりも上位にある
+    if(bufferEdgePassCnt == 0){//バッファがエッジに到達していない
+      //この場合は, lastDataPosition >= readPositionしかありえない
       dataCount = lastDataPosition - readPosition;
     }
-    else if(lastDataPosition < readPosition){//データ書き込み位置がバッファの終端を超えてしまった場合
+    else if(bufferEdgePassCnt == 1 && lastDataPosition <= readPosition){//読む前にデータが一度だけ満タンの場合は, read以前の場所しか許されない
       dataCount = lastDataPosition + UART_RECEIVE_BUFFER_SIZE - readPosition;
     }
-    else{//データ書き込み位置に変化がない場合
-      //Do nothing
+    else{
+      //bufferEdgeCount = 1で, readを超えた場合はバッファオーバーフロー
+      //bufferEdgeCount > 1は, バッファオーバーフロー
+      
+      //エラー
+      taskStatus = APP_UART_ERROR_STOPPED;
     }
-   
+
+    if(taskStatus == APP_UART_ERROR_STOPPED){
+      //エラー時は, タスクステータスをセットしてブレークすることでタスク終了してしまう
+      //このフラグは, TXタスクで立つ場合もある
+      break;
+    }
+  
     int cnt = 0;
     for(cnt = 0; cnt < dataCount; cnt++){
       xQueueSendToBack(UartRxQueue, &receiveBuffer[(readPosition + cnt) % UART_RECEIVE_BUFFER_SIZE], 0);
     }   
+
+    bufferEdgePassCnt = 0;
   }
 }
 void StartUartTXTask(const void* argument)
@@ -72,7 +97,15 @@ void StartUartTXTask(const void* argument)
   while(1){
     xQueueReceive(UartTxQueue, &queueStruct, portMAX_DELAY);
 
-    HAL_UART_Transmit(&huart1, queueStruct.DataPointer, queueStruct.DataLength, 1000);
+    if(HAL_UART_Transmit(&huart1, queueStruct.DataPointer, queueStruct.DataLength, 1000) != HAL_OK){
+      taskStatus = APP_UART_ERROR_STOPPED;
+    }
+
+    if(taskStatus == APP_UART_ERROR_STOPPED){
+      //エラー時は, タスクステータスをセットしてブレークすることでタスク終了してしまう
+      //このフラグは, RXタスクで立つ場合もある
+      break;
+    }
   }
 }
 int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
@@ -81,19 +114,29 @@ int UARTGetReceivedData(uint8_t* buffer, uint16_t bufferLength)
 
   int cnt = 0;
   for(cnt = 0; cnt < bufferLength; cnt++){
-    xQueueReceive(UartRxQueue, buffer, 0);
+    if(xQueueReceive(UartRxQueue, buffer, 0) == pdTRUE){
+      result++;
+    }
   }
+
+  return result;
 }
 void UARTSendData(uint8_t* data, uint16_t dataLength)
 {
-  TXQueueStruct_t queueStruct;
+  if(taskStatus == APP_UART_RUNNING){
+    TXQueueStruct_t queueStruct;
 
-  queueStruct.DataPointer = data;
-  queueStruct.DataLength = dataLength;
-  
-  xQueueSendToBack(UartTxQueue, &queueStruct, portMAX_DELAY);
+    queueStruct.DataPointer = data;
+    queueStruct.DataLength = dataLength;
+
+    xQueueSendToBack(UartTxQueue, &queueStruct, portMAX_DELAY);
+  }
 }
 void HAL_UART_TxHalfCpltCallback(UART_HandleTypeDef *huart)
 {
   bufferEdgePassCnt++;
+}
+APP_UART_Stauts_t GetStatus_APP_UART()
+{
+  return taskStatus;
 }
