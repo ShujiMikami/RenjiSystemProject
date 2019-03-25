@@ -64,7 +64,6 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-osThreadId MessageTaskHandle;
 
 /* USER CODE END PV */
 
@@ -74,7 +73,6 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void StartMessageTask(const void* argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -118,8 +116,6 @@ int main(void)
   UARTInit();
 
   
-  osThreadDef(MessageTask, StartMessageTask, osPriorityNormal, 0, 128);
-  MessageTaskHandle = osThreadCreate(osThread(MessageTask), NULL);
 
   /* USER CODE END 2 */
 
@@ -201,21 +197,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void StartMessageTask(const void* argument)
-{
-  static char msg_buffer[256];
-  while(1){
 
-    //タスクの実行状態を取得
-    vTaskList(msg_buffer);
-
-    //標準出力に表示
-    Printf4Debug(msg_buffer);
-    Printf4Debug("\r\n");
-
-    osDelay(1000);
-  }
-}
 
 /* USER CODE END 4 */
 

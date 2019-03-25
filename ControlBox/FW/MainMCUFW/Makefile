@@ -73,7 +73,8 @@ Src/dma.c \
 UserModules/Printf4Debug/Src/Printf4Debug.c \
 UserModules/APP_GPIO/Src/APP_GPIO.c \
 UserModules/SimpleRingBuffer/Src/SimpleRingBuffer.c \
-UserModules/APP_UART/Src/APP_UART.c
+UserModules/APP_UART/Src/APP_UART.c \
+Test/Test_Printf4Debug/Src/Test_Printf4Debug.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -142,7 +143,8 @@ C_INCLUDES =  \
 -IUserModules/Printf4Debug/Inc \
 -IUserModules/APP_GPIO/Inc \
 -IUserModules/SimpleRingBuffer/Inc \
--IUserModules/APP_UART/Inc
+-IUserModules/APP_UART/Inc \
+-ITest/Test_Printf4Debug/Inc
 
 
 # compile gcc flags
