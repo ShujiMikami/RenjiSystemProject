@@ -72,7 +72,8 @@ Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
 Src/dma.c \
 UserModules/Printf4Debug/Src/Printf4Debug.c \
 UserModules/APP_GPIO/Src/APP_GPIO.c \
-UserModules/SimpleRingBuffer/Src/SimpleRingBuffer.c
+UserModules/SimpleRingBuffer/Src/SimpleRingBuffer.c \
+UserModules/APP_UART/Src/APP_UART.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -140,7 +141,8 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include \
 -IUserModules/Printf4Debug/Inc \
 -IUserModules/APP_GPIO/Inc \
--IUserModules/SimpleRingBuffer/Inc
+-IUserModules/SimpleRingBuffer/Inc \
+-IUserModules/APP_UART/Inc
 
 
 # compile gcc flags
