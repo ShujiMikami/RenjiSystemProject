@@ -59,7 +59,7 @@ void StartUartRXTask(const void* argument)
   int dataCount = 0;
 
   while(1){
-    int lastDataPosition = UART_RECEIVE_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx) - 1;
+    int lastDataPosition = UART_RECEIVE_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
 
     if(bufferEdgePassCnt == 0){//バッファがエッジに到達していない
       //この場合は, lastDataPosition >= readPositionしかありえない
@@ -67,6 +67,7 @@ void StartUartRXTask(const void* argument)
     }
     else if(bufferEdgePassCnt == 1 && lastDataPosition <= readPosition){//読む前にデータが一度だけ満タンの場合は, read以前の場所しか許されない
       dataCount = lastDataPosition + UART_RECEIVE_BUFFER_SIZE - readPosition;
+      bufferEdgePassCnt = 0;
     }
     else{
       //bufferEdgeCount = 1で, readを超えた場合はバッファオーバーフロー
@@ -74,6 +75,7 @@ void StartUartRXTask(const void* argument)
       
       //エラー
       taskStatus = APP_UART_ERROR_STOPPED;
+      bufferEdgePassCnt = 0;
     }
 
     if(taskStatus == APP_UART_ERROR_STOPPED){
@@ -87,7 +89,6 @@ void StartUartRXTask(const void* argument)
       xQueueSendToBack(UartRxQueue, &receiveBuffer[(readPosition + cnt) % UART_RECEIVE_BUFFER_SIZE], 0);
     }   
 
-    bufferEdgePassCnt = 0;
   }
 }
 void StartUartTXTask(const void* argument)
@@ -132,9 +133,11 @@ void UARTSendData(uint8_t* data, uint16_t dataLength)
     xQueueSendToBack(UartTxQueue, &queueStruct, portMAX_DELAY);
   }
 }
-void HAL_UART_TxHalfCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  bufferEdgePassCnt++;
+  if(huart == &huart1){
+    bufferEdgePassCnt++;
+  }
 }
 APP_UART_Stauts_t GetStatus_APP_UART()
 {
