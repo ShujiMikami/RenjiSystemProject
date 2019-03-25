@@ -17,33 +17,38 @@ xQueueHandle printfMessageQueue;
 osThreadId PrintfTaskhandle;
 
 static void startPrintfTask(const void* argument);
+static int isInitialized = 0;
 
 void Printf4Debug(const char* format, ...)
 {
-  static char bufToSend[QUEUE_BUFFER_SIZE];
+  if(isInitialized != 0){
+    //不定長変数の処理
+    static char bufToSend[QUEUE_BUFFER_SIZE];
 
-  va_list ap;
+    va_list ap;
 
-  va_start(ap, format);
+    va_start(ap, format);
 
-  volatile int charLength = sprintf(bufToSend, format, ap);
+    volatile int charLength = sprintf(bufToSend, format, ap);
 
-  va_end(ap);
+    va_end(ap);
 
-  volatile int queueCount = charLength / QUEUE_SIZE;
+    //データのQueueへの格納
+    volatile int queueCount = charLength / QUEUE_SIZE;
 
-  if((charLength % QUEUE_SIZE) != 0){
-    queueCount += 1;
-  }
+    if((charLength % QUEUE_SIZE) != 0){
+      queueCount += 1;
+    }
 
-  int cnt = 0;
+    int cnt = 0;
 
-  for(cnt = 0; cnt < queueCount; cnt++){
-    char bufPart[QUEUE_SIZE];
-    strncpy(bufPart, &bufToSend[(QUEUE_SIZE - 1) * cnt], (QUEUE_SIZE - 1));
-    bufPart[QUEUE_SIZE - 1] = '\0';
+    for(cnt = 0; cnt < queueCount; cnt++){
+      char bufPart[QUEUE_SIZE];
+      strncpy(bufPart, &bufToSend[(QUEUE_SIZE - 1) * cnt], (QUEUE_SIZE - 1));
+      bufPart[QUEUE_SIZE - 1] = '\0';
 
-    xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
+      xQueueSendToBack(printfMessageQueue, bufPart, portMAX_DELAY);
+    }
   }
 }
 void startPrintfTask(const void* argument)
@@ -59,8 +64,12 @@ void startPrintfTask(const void* argument)
 
 void PrintfInit()
 {
+  if(isInitialized == 0){
     printfMessageQueue = xQueueCreate(QUEUE_DEPTH, QUEUE_SIZE);
     
     osThreadDef(PrintfTask, startPrintfTask, osPriorityNormal, 0, 128);
     PrintfTaskhandle = osThreadCreate(osThread(PrintfTask), NULL);
+
+    isInitialized = 1;
+  }
 }
