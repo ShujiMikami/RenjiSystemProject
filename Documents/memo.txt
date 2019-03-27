@@ -87,3 +87,10 @@
       この状態は, GetCounterが, readPosよりもバッファ内で後ろにあり, かつ, UARTReceiveCplt = trueのときで判別できる
     2-2 readPosがDMAに対し, 1回以上周回遅れし, さらにDMAがバッファの終了まで到達した場合
       この状態は, GetCounterとreadPosの関係に一切依存せず, UARTReceiveCplt が2回以上trueになっていることで判別できる
+2019/3/25
+  通信方式とりあえず以下のような感じで. 
+  基本的に対話型
+  [M->S]{0xA0, ByteCount, CommandCode, Parameters, Chksum}
+  [S->M]{0xA1, ByteCount, CommandCode, Data, Chksum}
+  スレーブ側は, A1受信をトリガーに, データの蓄積を開始, ByteCount受信完了段階で, バイト解析を行い, Chksumチェックをし, 
+  通過すれば, 解析結果に応じた動作をする. 動作を開始するにあたって, ACKを返し, 作業を開始する.

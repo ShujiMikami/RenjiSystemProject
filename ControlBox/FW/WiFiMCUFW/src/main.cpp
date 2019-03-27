@@ -7,20 +7,30 @@
 const uint32_t MESSAGE_DELAY = 1000;
 const String TASK_NAME = "MainTask";
 
-TaskMessager messager(TASK_NAME, "Running.", MESSAGE_DELAY);
+static uint8_t dataBuffer[500];
+
+static void setup_Communication();
+static void loop_Communication();
 
 void setup() 
 {
   // put your setup code here, to run once:
-  LEDToggleTask_initialize();
+  setup_Communication();
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
-  messager.routine();
+  loop_Communication();
   
 
-  LEDToggleTask_loop();
 }
 
+void setup_Communication()
+{
+  Serial.begin(115200);
+}
+void loop_Communication()
+{
+
+}
