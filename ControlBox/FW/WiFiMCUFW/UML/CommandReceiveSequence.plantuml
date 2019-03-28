@@ -29,10 +29,14 @@ loop
       deactivate FuncMain
   end
 
-  opt received count > 0
-    opt status = header not detected
+  opt header not detected
+    opt received count > 2
       opt byte[0] = 0xA0
         FuncMain -> FuncMain : status -> header detected
+          activate FuncMain
+          deactivate FuncMain
+      
+        FuncMain -> FuncMain : read databuffer[1] as byte count to be received
           activate FuncMain
           deactivate FuncMain
 
@@ -43,63 +47,34 @@ loop
         FuncMain -> FuncMain : reset received count()
           activate FuncMain
           deactivate FuncMain
-
-        FuncMain -> FuncMain : result = NO_BYTES_RECEIVED
-          activate FuncMain
-          deactivate FuncMain
-      end
-    else
-      FuncMain -> FuncMain : get current time stamp
-        activate FuncMain
-        deactivate FuncMain
-
-      opt received count > 2
-        FuncMain -> FuncMain : read databuffer[1] as byte count to be received
-          activate FuncMain
-          deactivate FuncMain
-
-        opt received count > byte count
-          opt checksum vaild
-            FuncMain -> FuncMain : result = VALID_BYTES_RECEIVED
-              activate FuncMain
-              deactivate FuncMain
-          else
-            FuncMain -> FuncMain : result = CHECKSUM_INVALID
-              activate FuncMain
-              deactivate FuncMain
-          end
-
-          FuncMain -> FuncMain : reset received count()
-            activate FuncMain
-            deactivate FuncMain
-        else
-          opt elapsed time from header detected > 50ms
-            FuncMain -> FuncMain : result = TIMEOUT_OCCURED
-              activate FuncMain
-              deactivate FuncMain
-
-            FuncMain -> FuncMain : reset received count()
-              activate FuncMain
-              deactivate FuncMain
-          end
-        end
-      else
-        opt elapsed time from header detected > 50ms
-          FuncMain -> FuncMain : result = TIMEOUT_OCCURED
-            activate FuncMain
-            deactivate FuncMain
-
-          FuncMain -> FuncMain : reset received count()
-            activate FuncMain
-            deactivate FuncMain
-         end
       end
     end
+  else
+    opt received count > byte count
+      opt checksum vaild
+        FuncMain -> FuncMain : result = VALID_BYTES_RECEIVED
+          activate FuncMain
+          deactivate FuncMain
+      else
+        FuncMain -> FuncMain : result = CHECKSUM_INVALID
+          activate FuncMain
+          deactivate FuncMain
+      end
+
+      FuncMain -> FuncMain : reset received count()
+        activate FuncMain
+        deactivate FuncMain
+    else
+      opt elapsed time from header detected > 50ms
+        FuncMain -> FuncMain : result = TIMEOUT_OCCURED
+          activate FuncMain
+          deactivate FuncMain
+
+        FuncMain -> FuncMain : reset received count()
+          activate FuncMain
+          deactivate FuncMain
+     end
+   end
   end
 end
-
-
-
-
-
 @enduml

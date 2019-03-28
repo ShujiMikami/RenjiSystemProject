@@ -59,6 +59,40 @@ BytesReceivedStatus loop_Communication()
   }
 
   //受信バイトバリデーション
+  int byteCount = 0;
+  if(!headerDetected){
+    if(receivedCount > 2){
+       if(!checkStartFromCommandByte()){//0xA0から開始してたら
+        headerDetected = true;//受信中に遷移
+        headerDetectedCount = millis();//受信時刻取得
+      }
+      else{
+        receivedCount = 0;//受信結果を無効化
+        result = NO_BYTES_RECEIVED;
+      }
+    }
+  }
+  else{
+    uint32_t timeElapsed = millis() - headerDetectedCount;
+
+    if(receivedCount >= byteCount){//受信予定バイト数受信してたら
+      if(checksumVaild()){//チェックサムが一致してたら
+        result = VALID_BYTES_RECEIVED;
+      }
+      else{
+        result = CHECKSUM_INVALID;
+      }
+      receivedCount = 0;
+    }
+    else{
+      if(timeElapsed > 50){//50msec以上空いたら
+        result = TIMEOUT_OCCURED;
+        receivedCount = 0;
+      }
+    }
+  }
+
+
   if(receivedCount > 0){
     if(!headerDetected){//コマンドパケットヘッダ受信前
       if(!checkStartFromCommandByte()){//0xA0から開始してたら
