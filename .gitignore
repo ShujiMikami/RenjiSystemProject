@@ -24,3 +24,6 @@ ControlBox/FW/MainMCUFW/.vscode/ipch
 .cortex-debug.peripherals.state.json
 .cortex-debug.registers.state.json
 ControlBox/FW/WiFiMCUFW/.vscode/ipch
+ControlBox/FW/WiFiMCUFW/UML/CommandReceiveSequence.plantuml~
+ControlBox/FW/WiFiMCUFW/UML/.CommandReceiveSequence.plantuml.swp
+ControlBox/FW/WiFiMCUFW/UML/.CommandReceiveSequence.plantuml.un~
