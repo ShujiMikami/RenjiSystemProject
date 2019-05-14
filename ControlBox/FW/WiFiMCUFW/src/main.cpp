@@ -8,7 +8,9 @@ typedef enum{
   NO_BYTES_RECEIVED,
   TIMEOUT_OCCURED,
   CHECKSUM_INVALID,
-  VALID_BYTES_RECEIVED
+  VALID_BYTES_RECEIVED,
+  WAITING_FOR_BYTE_COUNT,
+  WAITING_FOR_BYTE_COMPLETE
 }BytesReceivedStatus;
 
 
@@ -62,9 +64,10 @@ BytesReceivedStatus loop_Communication()
   int byteCount = 0;
   if(!headerDetected){
     if(receivedCount > 2){
-       if(!checkStartFromCommandByte()){//0xA0から開始してたら
+      if(!checkStartFromCommandByte()){//0xA0から開始してたら
         headerDetected = true;//受信中に遷移
         headerDetectedCount = millis();//受信時刻取得
+        byteCount = dataBuffer[1];//バイトカウント取得
       }
       else{
         receivedCount = 0;//受信結果を無効化
@@ -73,8 +76,6 @@ BytesReceivedStatus loop_Communication()
     }
   }
   else{
-    uint32_t timeElapsed = millis() - headerDetectedCount;
-
     if(receivedCount >= byteCount){//受信予定バイト数受信してたら
       if(checksumVaild()){//チェックサムが一致してたら
         result = VALID_BYTES_RECEIVED;
@@ -85,64 +86,29 @@ BytesReceivedStatus loop_Communication()
       receivedCount = 0;
     }
     else{
+      uint32_t timeElapsed = millis() - headerDetectedCount;
+
       if(timeElapsed > 50){//50msec以上空いたら
         result = TIMEOUT_OCCURED;
         receivedCount = 0;
       }
     }
   }
-
-
-  if(receivedCount > 0){
-    if(!headerDetected){//コマンドパケットヘッダ受信前
-      if(!checkStartFromCommandByte()){//0xA0から開始してたら
-        headerDetected = true;//受信中に遷移
-        headerDetectedCount = millis();//受信時刻取得
-      }
-      else{
-        receivedCount = 0;//受信結果を無効化
-        result = NO_BYTES_RECEIVED;
-      }
-    }
-    else{//コマンドパケットヘッダ受信済み
-      uint32_t timeElapsed = millis() - headerDetectedCount;
-
-      if(receivedCount >= 2){//バイトカウントまで受信してたら
-        int byteCount = dataBuffer[1];
-     
-        if(receivedCount >= byteCount){//受信予定バイト数受信してたら
-          if(checksumVaild()){//チェックサムが一致してたら
-            result = VALID_BYTES_RECEIVED;
-          }
-          else{
-            result = CHECKSUM_INVALID;
-          }
-          receivedCount = 0;
-        }
-        else{
-          if(timeElapsed > 50){//50msec以上空いたら
-            result = TIMEOUT_OCCURED;
-            receivedCount = 0;
-          }
-        }
-      }
-      else{
-        if(timeElapsed > 50){//50msec以上空いたら
-          result = TIMEOUT_OCCURED;
-          receivedCount = 0;
-        }
-      }
-    }
-  }
-
   return result;
 }
 
 bool checkStartFromCommandByte()
 {
-  return (dataBuffer[0] == 0xA0);
-}
+  bool result = false;
 
+  if(receivedCount > 0 && dataBuffer[0] == 0xA0){
+    result = true;
+  }
+  else{
+    receivedCount = 0;//受信結果を無効化
+  }
+  return result;
+}
 bool checksumVaild()
 {
   return true;
