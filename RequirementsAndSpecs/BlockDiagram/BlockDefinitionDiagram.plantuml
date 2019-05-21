@@ -1,0 +1,50 @@
+@startuml
+
+title Block Diagram 
+
+hide circle
+hide method
+hide empty members
+
+
+class "ControlBox" as BlockControlBox <<block>>{
+}
+package "Cage"{
+  class "Thermistor" as BlockThermistor <<block>>{
+  }
+  class "UVLight" as BlockUVLight <<block>>{
+  }
+  class "Heater" as BlockHeater <<block>>{
+  }
+  class "Fan" as BlockFan <<block>>{
+  }
+}
+class "WebBrowser" as BlockWebBrowser <<block>>{
+}
+class "WifiRouter" as BlockWifiRouter <<block>>{
+}
+
+'ControlBoxに, UVLightを接続
+BlockControlBox "1"--"1" BlockUVLight : 100VCable 
+
+'ControlBoxに, Heaterを接続
+BlockControlBox "1"--"1" BlockHeater : 100VCable
+
+'ControlBoxに, Fanを接続
+BlockControlBox "1"--"1" BlockFan : 100VCable
+
+'ControlBoxに, Thermistorを接続
+BlockControlBox "1"--"1" BlockThermistor : AnalogCable
+
+'ControlBoxは, RouterとWifi接続
+BlockControlBox "1"--"1" BlockWifiRouter : Wifi
+
+'RouterとWebBrowserはLANで接続
+BlockWifiRouter "1"--".*" BlockWebBrowser : LAN
+
+'ControlBoxとWiFiはLANで接続(WiFiの設定時のみ)
+BlockControlBox "1"--"1" BlockWebBrowser : WiFi
+note on link
+  WiFi設定のときのみ, P2P接続
+end note
+@enduml

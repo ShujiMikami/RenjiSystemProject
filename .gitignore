@@ -32,3 +32,5 @@ ControlBox/FW/MainMCUFW/Src/main.c~
 ControlBox/FW/MainMCUFW/Src/.main.c.un~
 ControlBox/FW/GPIO_Expander/.vscode/ipch/d1ef5500424c2ce2/mmap_address.bin
 RenjiSystem.code-workspace
+*.plantuml~
+*.un~
