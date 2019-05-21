@@ -1,0 +1,72 @@
+@startuml
+
+title Internal Block Definition Diagram [ControlBox]
+
+hide circle
+hide method
+hide empty members
+
+package "メイン制御部" as PackageMainControlUnit{
+  class "MainMCU:STM32" as ClassMainMCU{
+  }
+  class "AC制御:SSR(3)" as ClassACControler{
+  }
+
+  ClassMainMCU -- ClassACControler
+}
+package "外部通信制御部"{
+  class "WiFiMCU:ESPWROOM02" as ClassWiFiMCU{
+  }
+}
+package "表示部" as PackageIndicator{
+  class "情報表示:LCD" as ClassInformationIndicate{
+  }
+  class "ステータス表示:LED(5)" as ClassStatusIndicate{
+  }
+}
+package "入力部"{
+  class "制御UI:スイッチ(7)" as ClassControlUI{
+  }
+  class "制御ON/OFF入力:タクトスイッチ" as ClassONOFFInput{
+  }
+  class "設定値入力:タクトスイッチ(2)" as ClassSettingInput{
+  }
+  class "設定反映入力:タクトスイッチ" as ClassSettingReflect{
+  }
+  class "手動制御入力:スライドスイッチ(3)" as ClassManualSettingInput{
+  }
+
+  ClassControlUI <|-- ClassONOFFInput
+  ClassControlUI <|-- ClassSettingInput
+  ClassControlUI <|-- ClassSettingReflect
+  ClassControlUI <|-- ClassManualSettingInput
+}
+package "電源供給部"{
+  class "表示機器用電源生成:5Vレギュレータ" as ClassPowerSourceIndicator{
+  }
+  class "MCU用電源生成:3Vレギュレータ" as ClassPowerSourceMCU{
+  }
+  class "変圧/整流:トランスブリッジダイオード回路" as ClassTransformer{
+  }
+  class "安全装置:ヒューズ" as ClassSafetyDevice{
+  }
+}
+package "外部接続部"{
+  class "電源供給部:メガネACインレット" as ClassPowerSource{
+  }
+  class "制御対象電源供給部:ACReceptacle(3)" as ClassPeripheralPowerSource{
+  }
+  class "温度センサ入力部:ピンソケット" as ClassPeripheralInput{
+  }
+  class "MCUプログラミング端子:ピンソケット(2)" as ClassMCUProgrammingPin{
+  }
+}
+
+ClassMainMCU -- ClassControlUI : GPIOIN
+ClassMainMCU -- ClassWiFiMCU : UART
+
+ClassPowerSourceIndicator -- PackageIndicator
+ClassPowerSourceMCU -- PackageMainControlUnit
+
+ClassMCUProgrammingPin -- ClassMainMCU
+@enduml
