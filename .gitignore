@@ -24,3 +24,11 @@ ControlBox/FW/MainMCUFW/.vscode/ipch
 .cortex-debug.peripherals.state.json
 .cortex-debug.registers.state.json
 ControlBox/FW/WiFiMCUFW/.vscode/ipch
+ControlBox/FW/WiFiMCUFW/UML/CommandReceiveSequence.plantuml~
+ControlBox/FW/WiFiMCUFW/UML/.CommandReceiveSequence.plantuml.swp
+ControlBox/FW/WiFiMCUFW/UML/.CommandReceiveSequence.plantuml.un~
+ControlBox/FW/VSCodeFWWorkspace.code-workspace
+ControlBox/FW/MainMCUFW/Src/main.c~
+ControlBox/FW/MainMCUFW/Src/.main.c.un~
+ControlBox/FW/GPIO_Expander/.vscode/ipch/d1ef5500424c2ce2/mmap_address.bin
+RenjiSystem.code-workspace

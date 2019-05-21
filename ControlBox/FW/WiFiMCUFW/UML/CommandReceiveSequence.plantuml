@@ -1,0 +1,80 @@
+@startuml
+
+hide footbox
+
+participant "Main" as FuncMain
+participant "HardwareSerial" as ClassHardwareSerial
+
+==Arduino setupFunc==
+FuncMain -> ClassHardwareSerial : begin(115200)
+  activate ClassHardwareSerial
+FuncMain <-- ClassHardwareSerial
+  deactivate ClassHardwareSerial
+
+==Arduino loop==
+loop
+  FuncMain -> ClassHardwareSerial : available()
+    activate ClassHardwareSerial
+  FuncMain <-- ClassHardwareSerial : received byte count
+    deactivate ClassHardwareSerial
+
+  opt received byte count > 0
+    FuncMain -> ClassHardwareSerial : data read for receieved byte count()
+      activate ClassHardwareSerial
+    FuncMain <-- ClassHardwareSerial : data
+      deactivate ClassHardwareSerial
+
+    FuncMain -> FuncMain : received count update()
+      activate FuncMain 
+      deactivate FuncMain
+  end
+
+  opt header not detected
+    opt received count > 2
+      opt byte[0] = 0xA0
+        FuncMain -> FuncMain : status -> header detected
+          activate FuncMain
+          deactivate FuncMain
+      
+        FuncMain -> FuncMain : read databuffer[1] as byte count to be received
+          activate FuncMain
+          deactivate FuncMain
+
+        FuncMain -> FuncMain : get header detected time
+          activate FuncMain
+          deactivate FuncMain
+      else
+        FuncMain -> FuncMain : reset received count()
+          activate FuncMain
+          deactivate FuncMain
+      end
+    end
+  else
+    opt received count > byte count
+      opt checksum vaild
+        FuncMain -> FuncMain : result = VALID_BYTES_RECEIVED
+          activate FuncMain
+          deactivate FuncMain
+      else
+        FuncMain -> FuncMain : result = CHECKSUM_INVALID
+          activate FuncMain
+          deactivate FuncMain
+      end
+
+      FuncMain -> FuncMain : reset received count()
+        activate FuncMain
+        deactivate FuncMain
+    else
+      opt elapsed time from header detected > 50ms
+        FuncMain -> FuncMain : result = TIMEOUT_OCCURED
+          activate FuncMain
+          deactivate FuncMain
+
+        FuncMain -> FuncMain : reset received count()
+          activate FuncMain
+          deactivate FuncMain
+     end
+   end
+  end
+end
+@enduml

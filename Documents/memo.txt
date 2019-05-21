@@ -87,3 +87,25 @@
       この状態は, GetCounterが, readPosよりもバッファ内で後ろにあり, かつ, UARTReceiveCplt = trueのときで判別できる
     2-2 readPosがDMAに対し, 1回以上周回遅れし, さらにDMAがバッファの終了まで到達した場合
       この状態は, GetCounterとreadPosの関係に一切依存せず, UARTReceiveCplt が2回以上trueになっていることで判別できる
+2019/3/25
+  通信方式とりあえず以下のような感じで. 
+  基本的に対話型
+  [M->S]{0xA0, ByteCount, CommandCode, Parameters, Chksum}
+  [S->M]{0xA1, ByteCount, CommandCode, Data, Chksum}
+  スレーブ側は, A1受信をトリガーに, データの蓄積を開始, ByteCount受信完了段階で, バイト解析を行い, Chksumチェックをし, 
+  通過すれば, 解析結果に応じた動作をする. 動作を開始するにあたって, ACKを返し, 作業を開始する.
+  動作作業中も, ノンブロッキング処理とし, 作業中にコマンドが来た場合は, 
+  [S->M]{0xA2, ByteCount, ErrorCode, Chksum}
+  というフォーマットでエラーを返すようにする. 
+
+2019/5/14
+  Wifiが受信したHTTPなどのメッセージは, WifiMCUの中で処理したほうが良い. 
+
+2019/5/16
+  ESPとSTMのすみわけについて
+    ESPWROOMで, 常にWiFiのメッセージを受け取り, FIFOにためておく. FIFOが空じゃない場合, ポートを立てる. 
+    STM32では, スレッドで常にESPのピンを監視しており, ピンが立ったら, UART経由で, コマンド内容送信要求を送る. 
+    ESPWROOMは, FIFOから取り出したコマンドをUARTで送信し, もし空になったらピンを下ろし, 空でないならピンを上げたままにする. 
+2019/5/17
+  やはりメッセージのやりとりは, ESPがマスターになるべき.そもそもマスターからの入力口なんだから。
+  ESPがUARTでSTM32に送信し, STMは処理をしたのち, それに対して返答を行う  
