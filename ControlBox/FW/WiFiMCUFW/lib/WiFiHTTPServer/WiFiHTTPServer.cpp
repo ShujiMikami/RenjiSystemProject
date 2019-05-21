@@ -3,6 +3,7 @@
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
 #include "WiFiHTTPServer.h"
+#include <ESP8266mDNS.h>
 
 const String pass = "Settings";
 
@@ -33,7 +34,23 @@ String GetSSID()
 
   return ssid;
 }
-void SetupWiFiServer(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
+void SetupWiFiServer(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
+{
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, pass);
+
+  while(WiFi.status() != WL_CONNECTED){
+  }
+
+  if(MDNS.begin("RenjiSystemServer")){
+
+  }
+
+  server.on("/", HTTP_GET, handleRootGet);
+  server.on("/", HTTP_POST, handleRootPost);
+  server.begin();
+}
+void SetupWiFiServer_AccessPoint(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
 {
   callBackFuncGET = funcForGET;
   callBackFuncPOST = funcForPOST;

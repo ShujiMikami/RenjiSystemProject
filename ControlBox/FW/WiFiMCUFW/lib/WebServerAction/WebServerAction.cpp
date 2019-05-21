@@ -17,6 +17,9 @@ static void callBackGET_WiFiSet(ESP8266WebServer& server);
 static void callBackPOST_SystemControl(ESP8266WebServer& server);
 static void callBackGET_SystemControl(ESP8266WebServer& server);
 
+static String readSSIDFromFlash();
+static String readPASSFromFlash();
+
 WiFiActionMode_t getWiFiActionMode()
 {
     WiFiActionMode_t result = WIFI_RUN_MODE;
@@ -35,12 +38,23 @@ WiFiActionMode_t getWiFiActionMode()
 
     return result;
 }
+String readSSIDFromFlash()
+{
+
+}
+String readPASSFromFlash()
+{
+
+}
+
 void Setup_WebServer()
 {
     if(getWiFiActionMode() == WIFI_SETTING_MODE){
-        SetupWiFiServer(callBackGET_WiFiSet, callBackPOST_WiFiSet);
+        SetupWiFiServer_AccessPoint(callBackGET_WiFiSet, callBackPOST_WiFiSet);
     }else{
-        SetupWiFiServer(callBackGET_SystemControl, callBackPOST_SystemControl);
+        String storedSSID = readSSIDFromFlash();
+        String storedPass = readPASSFromFlash();
+        SetupWiFiServer(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
     }
 }
 void Loop_WebServer()
