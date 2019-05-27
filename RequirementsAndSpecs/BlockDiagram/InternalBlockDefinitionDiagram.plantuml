@@ -2,6 +2,8 @@
 
 title Internal Block Definition Diagram [ControlBox]
 
+left to right direction
+
 hide circle
 hide method
 hide empty members
@@ -65,8 +67,12 @@ package "外部接続部"{
 ClassMainMCU -- ClassControlUI : GPIOIN
 ClassMainMCU -- ClassWiFiMCU : UART
 
-ClassPowerSourceIndicator -- PackageIndicator
-ClassPowerSourceMCU -- PackageMainControlUnit
+ClassMCUProgrammingPin -- ClassMainMCU : SWIO
 
-ClassMCUProgrammingPin -- ClassMainMCU
+ClassMainMCU -- ClassStatusIndicate : GPIOOUT
+ClassMainMCU -- ClassInformationIndicate : I2C
+
+ClassMainMCU -- ClassPeripheralInput : Analog
+
+
 @enduml
