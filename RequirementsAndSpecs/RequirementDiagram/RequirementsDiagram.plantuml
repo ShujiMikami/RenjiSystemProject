@@ -6,18 +6,56 @@ hide method
 
 title システム要求図
 
+left to right direction
+
 class "生態環境維持" as RequirementControlEnvironment <<requirement>>{
   text = "生体の環境を適切に維持してほしい"
 }
 class "温度制御" as RequirementTemperatureControl <<requirement>>{
-  text = "ケージ内を指定した温度に制御してほしい"
+  text = "ケージ内を適切な温度に制御してほしい"
+}
+class "ヒータ制御" as RequirementHeaterControl <<requirement>>{
+  text = "ケージ内のヒータを制御してほしい"
 }
 class "UV制御" as RequirementUVControl <<requirement>>{
-  text = "ケージ内にUVBの紫外線ON/OFFを制御してほしい"
+  text = "ケージ内のUVBの紫外線を制御してほしい"
 }
-class "オンライン監視" as RequirementOnlineConnection <<requirement>>{
-  text = "インターネット経由で, ケージの状態をチェックしたい"
+class "UV照明制御" as RequirementUVlightControl <<requirement>>{
+  text = "ケージ内のUV照明を制御してほしい"
 }
 
+class "状態監視" as RequirementCheckEnvironment <<requirement>>{
+  text = "ケージの状態をチェックしたい"
+}
+class "制御対象機器の接続" as RequirementThermoPeripheralConnection<<physicalRequirement>>{
+  text = "市販の保温器, 照明を無改造で接続したい"
+}
+
+class "時間依存のダイナミック制御" as RequirementEnvironmentDinamicControl<<extendedRequirement>>{
+  text = "時間に応じて環境を変化させてほしい"
+}
+
+class "標準時刻との同期" as RequirementAbsoluteTime<<requirement>>{
+  text = "現在の時刻と同期してほしい"
+}
+
+class "オンライン監視" as RequirementCheckEnvironmentOnline<<extendedRequirement>>{
+  text = "ネットワークでつながった機器からチェックしたい"
+}
+
+class "温度測定" as RequirementMeasureTemperature<<requirement>>{
+  text = "ケージ内の温度を測定してほしい"
+}
+
+RequirementControlEnvironment +-- RequirementUVControl
+RequirementControlEnvironment +-- RequirementTemperatureControl
+RequirementControlEnvironment .. RequirementEnvironmentDinamicControl
+RequirementTemperatureControl -- RequirementHeaterControl : <<satisfy>>
+RequirementUVControl -- RequirementUVlightControl : <<satisfy>>
+
+RequirementEnvironmentDinamicControl +-- RequirementAbsoluteTime
+
+RequirementCheckEnvironment .. RequirementCheckEnvironmentOnline
+RequirementTemperatureControl -- RequirementMeasureTemperature : <<satisfy>>
 
 @enduml
