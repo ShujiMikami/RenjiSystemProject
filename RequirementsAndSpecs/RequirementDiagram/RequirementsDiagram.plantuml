@@ -14,37 +14,73 @@ class "生態環境維持" as RequirementControlEnvironment <<requirement>>{
 class "温度制御" as RequirementTemperatureControl <<requirement>>{
   text = "ケージ内を適切な温度に制御してほしい"
 }
-class "ヒータ制御" as RequirementHeaterControl <<requirement>>{
+class "ヒータ制御" as RequirementHeaterControl <<requirement>> #LimeGreen {
+  ID = CTR03
   text = "ケージ内のヒータを制御してほしい"
 }
 class "UV制御" as RequirementUVControl <<requirement>>{
   text = "ケージ内のUVBの紫外線を制御してほしい"
 }
-class "UV照明制御" as RequirementUVlightControl <<requirement>>{
+class "UV照明制御" as RequirementUVlightControl <<requirement>> #LimeGreen {
+  ID = CTR02
   text = "ケージ内のUV照明を制御してほしい"
 }
 
 class "状態監視" as RequirementCheckEnvironment <<requirement>>{
   text = "ケージの状態をチェックしたい"
 }
-class "制御対象機器の接続" as RequirementThermoPeripheralConnection<<physicalRequirement>>{
+class "制御対象機器の接続" as RequirementThermoPeripheralConnection<<physicalRequirement>> #LightBlue {
+  ID = PHY01
   text = "市販の保温器, 照明を無改造で接続したい"
 }
+note right of RequirementThermoPeripheralConnection : <<rationale>>\n 様々な飼育環境で使用したいため
 
 class "時間依存のダイナミック制御" as RequirementEnvironmentDinamicControl<<extendedRequirement>>{
   text = "時間に応じて環境を変化させてほしい"
 }
 
-class "標準時刻との同期" as RequirementAbsoluteTime<<requirement>>{
+class "標準時刻との同期" as RequirementAbsoluteTime<<functionalRequirement>> #Pink {
+  ID = DYN01
   text = "現在の時刻と同期してほしい"
 }
 
-class "オンライン監視" as RequirementCheckEnvironmentOnline<<extendedRequirement>>{
+class "パターン設定" as RequirementPatternSetting<<functionalRequirement>> #Pink {
+  ID = DYN02
+  text = "温度のテーブルを設定できるようにしてほしい"
+}
+class "UVタイマ" as RequirementUVTimer<<functionalRequirement>> #Pink {
+  ID = DYN03
+  text = "UVを指定の時間で自動でON/OFFできるように設定したい
+}
+
+class "オンライン監視" as RequirementCheckEnvironmentOnline<<extendedRequirement>> #Violet {
+  ID = NET01
   text = "ネットワークでつながった機器からチェックしたい"
 }
 
-class "温度測定" as RequirementMeasureTemperature<<requirement>>{
+class "温度測定" as RequirementMeasureTemperature<<functionalRequirement>> #LimeGreen {
+  ID = CTR01
   text = "ケージ内の温度を測定してほしい"
+}
+
+class "温度表示" as RequirementIndicateTemperature<<functionalRequirement>> #Orange {
+  ID = IND01
+  text = "ケージ内の温度を表示してほしい"
+}
+class "制御状態表示" as RequirementIndicateControlStatus<<functionalRequirement>> #Orange {
+  ID = IND02
+  text = "制御対象機器の状態を表示してほしい"
+}
+
+class "制御開始停止" as RequirementControlEnableDisable<<functionalRequirement>> #LightSeaGreen {
+  ID = FNC01
+  text = "制御のON/OFFができるようにしてほしい"
+}
+note right of RequirementControlEnableDisable : allocatedFrom\n <<useCase>>システムONOFF
+
+class "制御中表示" as RequirementIndicateControlEnabled<<functionalRequirement>> #Orange {
+  ID = IND03
+  text = "制御中か否か表示してほしい"
 }
 
 RequirementControlEnvironment +-- RequirementUVControl
@@ -57,5 +93,11 @@ RequirementEnvironmentDinamicControl +-- RequirementAbsoluteTime
 
 RequirementCheckEnvironment .. RequirementCheckEnvironmentOnline
 RequirementTemperatureControl -- RequirementMeasureTemperature : <<satisfy>>
+RequirementEnvironmentDinamicControl +-- RequirementPatternSetting
+RequirementEnvironmentDinamicControl +-- RequirementUVTimer
 
+RequirementCheckEnvironment +-- RequirementIndicateTemperature
+RequirementCheckEnvironment +-- RequirementIndicateControlStatus
+
+RequirementControlEnableDisable +-- RequirementIndicateControlEnabled
 @enduml
