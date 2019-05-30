@@ -1,0 +1,48 @@
+@startuml
+
+title System setup on WiFi setting sequence
+
+hide footbox
+
+actor "User" as ActorUser
+participant "HostMachine" as HostMachine
+participant "STM32" as MainMCU
+participant "ESP8266" as WiFiMCU
+
+
+ActorUser -> HostMachine : <<WebBrowser>>\n access to ESP8266()
+  activate HostMachine
+
+HostMachine -> WiFiMCU : HTTP GET()
+  activate WiFiMCU
+
+HostMachine <-- WiFiMCU : send HTML for system setting()
+  deactivate WiFiMCU
+
+ActorUser <-- HostMachine : indicate WebPage()
+  deactivate HostMachine
+
+ActorUser -> HostMachine : <<WebBrowser>>\n Input and push "submit"()
+  activate HostMachine
+
+HostMachine -> WiFiMCU : HTTP POST(Input settings)
+  activate WiFiMCU
+
+ActorUser <-- HostMachine
+  deactivate HostMachine
+
+MainMCU <- WiFiMCU : <<UART>>\n inform setting 
+  activate MainMCU
+
+opt setting valid
+  MainMCU -> MainMCU : setting reflect
+    activate MainMCU
+    deactivate MainMCU
+
+  MainMCU -> MainMCU : setting save to flash
+    activate MainMCU
+    deactivate MainMCU
+end
+
+deactivate MainMCU
+deactivate WiFiMCU
