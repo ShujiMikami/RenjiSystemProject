@@ -68,6 +68,17 @@ ActorUser -> HostMachine : <<WebBrowser>>\n Input and push "submit"()
 HostMachine -> WiFiMCU : HTTP POST(Input SSID and PASS)
   activate WiFiMCU
 
+WiFiMCU -> WiFiMCU : save SSID and PASS to file
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+MainMCU <- WiFiMCU : <<UART>>\n inform setting received 
+  activate MainMCU
+
+
+MainMCU --> WiFiMCU : <<GPIO>>\n setting mode disable()
+  deactivate MainMCU
+
 ActorUser <-- HostMachine
   deactivate HostMachine
 
@@ -79,19 +90,12 @@ WiFiMCU -> WiFiMCU : try connection to SSID, PASS()
   activate WiFiMCU
   deactivate WiFiMCU
 
-opt connection success
-  WiFiMCU -> WiFiMCU : save SSID and PASS to file
-    activate WiFiMCU
-    deactivate WiFiMCU
-end
-
 MainMCU <- WiFiMCU : <<UART>>\n inform connection result
+  deactivate WiFiMCU
   activate MainMCU
 
 ActorUser <- MainMCU : <<LCD>>\n indicate connection result()
-
-MainMCU --> WiFiMCU : <<GPIO>>\n setting mode disable()
   deactivate MainMCU
 
-deactivate WiFiMCU
+
 
