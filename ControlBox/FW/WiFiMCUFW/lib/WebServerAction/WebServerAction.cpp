@@ -4,11 +4,6 @@
 
 #define MODE_DECISION_PIN 14
 
-typedef enum{
-    WIFI_SETTING_MODE,
-    WIFI_RUN_MODE
-}WiFiActionMode_t;
-
 static WiFiActionMode_t getWiFiActionMode();
 
 static void callBackPOST_WiFiSet(ESP8266WebServer& server);
@@ -47,9 +42,9 @@ String readPASSFromFlash()
 
 }
 
-void Setup_WebServer()
+void Setup_WebServer(WiFiActionMode_t actionMode)
 {
-    if(getWiFiActionMode() == WIFI_SETTING_MODE){
+    if(actionMode == WIFI_SETTING_MODE){
         SetupWiFiServer_AccessPoint(callBackGET_WiFiSet, callBackPOST_WiFiSet);
     }else{
         String storedSSID = readSSIDFromFlash();
