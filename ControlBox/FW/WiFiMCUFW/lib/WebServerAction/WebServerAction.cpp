@@ -2,7 +2,7 @@
 #include "WiFiHTTPServer.h"
 #include "WebServerFormHTML.h"
 
-#define MODE_DECISION_PIN 12
+#define MODE_DECISION_PIN 14
 
 typedef enum{
     WIFI_SETTING_MODE,
