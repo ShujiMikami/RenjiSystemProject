@@ -18,11 +18,11 @@ public:
     static void LoopForWiFiInterface();
     static String GetSSID();
 private:
-    WiFiHTTPServer();
-    static ESP8266WebServer* pServer;
+    static ESP8266WebServer server;
     static void (*callBackFuncGET)(ESP8266WebServer&);
     static void (*callBackFuncPOST)(ESP8266WebServer&);
-
+private:
+    WiFiHTTPServer();
     static void handleRootGet();
     static void handleRootPost();
 };
