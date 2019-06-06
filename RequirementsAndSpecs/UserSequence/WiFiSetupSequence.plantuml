@@ -1,0 +1,101 @@
+@startuml
+
+title WiFi setting sequence
+
+hide footbox
+
+actor "User" as ActorUser
+participant "HostMachine" as HostMachine
+participant "STM32" as MainMCU
+participant "ESP8266" as WiFiMCU
+
+ActorUser -> MainMCU : <<push switch>>\nswitch to setting mode()
+  activate MainMCU
+
+MainMCU -> MainMCU : enter setting mode()
+  activate MainMCU
+  deactivate MainMCU
+
+ActorUser <-- MainMCU : <<LCD>>\n Indicate setting mode menu()
+  deactivate MainMCU
+
+ActorUser -> MainMCU : <<push switch>>\n select WiFi setting()
+  activate MainMCU
+
+MainMCU -> WiFiMCU : <<GPIO>>\n setting mode notify()
+  activate WiFiMCU
+
+WiFiMCU -> WiFiMCU : enter AP and Server mode()
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+WiFiMCU -> WiFiMCU : set WiFi setting action callBack()
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+MainMCU <-- WiFiMCU : <<UART>>\n setting mode entry OK notify(SSID, PASS)
+  deactivate WiFiMCU
+
+ActorUser <-- MainMCU : <<LCD>>\n Indicate SSID and PASS to acccess()
+  deactivate MainMCU
+
+ActorUser -> HostMachine : connect to ESP8266 as WiFi AP(SSID, PASS)
+  activate HostMachine
+
+HostMachine -> WiFiMCU : WiFiConnection()
+  activate WiFiMCU
+HostMachine <-- WiFiMCU 
+  deactivate WiFiMCU
+
+ActorUser <-- HostMachine
+  deactivate HostMachine
+
+ActorUser -> HostMachine : <<WebBrowser>>\n access to 198.168.4.1()
+  activate HostMachine
+
+HostMachine -> WiFiMCU : HTTP GET()
+  activate WiFiMCU
+
+HostMachine <-- WiFiMCU : send HTML for WiFi setting()
+  deactivate WiFiMCU
+
+ActorUser <-- HostMachine : indicate WebPage()
+  deactivate HostMachine
+
+ActorUser -> HostMachine : <<WebBrowser>>\n Input and push "submit"()
+  activate HostMachine
+
+HostMachine -> WiFiMCU : HTTP POST(Input SSID and PASS)
+  activate WiFiMCU
+
+WiFiMCU -> WiFiMCU : save SSID and PASS to file
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+MainMCU <- WiFiMCU : <<UART>>\n inform setting received 
+  activate MainMCU
+
+
+MainMCU --> WiFiMCU : <<GPIO>>\n setting mode disable()
+  deactivate MainMCU
+
+ActorUser <-- HostMachine
+  deactivate HostMachine
+
+WiFiMCU -> WiFiMCU : enter Client mode()
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+WiFiMCU -> WiFiMCU : try connection to SSID, PASS()
+  activate WiFiMCU
+  deactivate WiFiMCU
+
+MainMCU <- WiFiMCU : <<UART>>\n inform connection result
+  deactivate WiFiMCU
+  activate MainMCU
+
+ActorUser <- MainMCU : <<LCD>>\n indicate connection result()
+  deactivate MainMCU
+
+
+

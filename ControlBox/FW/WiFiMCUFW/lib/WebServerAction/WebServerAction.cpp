@@ -2,12 +2,7 @@
 #include "WiFiHTTPServer.h"
 #include "WebServerFormHTML.h"
 
-#define MODE_DECISION_PIN 12
-
-typedef enum{
-    WIFI_SETTING_MODE,
-    WIFI_RUN_MODE
-}WiFiActionMode_t;
+#define MODE_DECISION_PIN 14
 
 static WiFiActionMode_t getWiFiActionMode();
 
@@ -47,9 +42,9 @@ String readPASSFromFlash()
 
 }
 
-void Setup_WebServer()
+void Setup_WebServer(WiFiActionMode_t actionMode)
 {
-    if(getWiFiActionMode() == WIFI_SETTING_MODE){
+    if(actionMode == WIFI_SETTING_MODE){
         SetupWiFiServer_AccessPoint(callBackGET_WiFiSet, callBackPOST_WiFiSet);
     }else{
         String storedSSID = readSSIDFromFlash();

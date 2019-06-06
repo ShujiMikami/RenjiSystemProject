@@ -4,10 +4,29 @@
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
 
+/*
 void SetupWiFiServer(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
 void SetupWiFiServer_AccessPoint(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
 void LoopForWiFiInterface();
 
 String GetSSID();
+*/
+
+class WiFiHTTPServer
+{
+public:
+    static void Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
+    static void Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
+    static void LoopForWiFiInterface();
+    static String GetSSID();
+private:
+    static ESP8266WebServer server;
+    static void (*callBackFuncGET)(ESP8266WebServer&);
+    static void (*callBackFuncPOST)(ESP8266WebServer&);
+private:
+    WiFiHTTPServer();
+    static void handleRootGET();
+    static void handleRootPOST();
+};
 
 #endif
