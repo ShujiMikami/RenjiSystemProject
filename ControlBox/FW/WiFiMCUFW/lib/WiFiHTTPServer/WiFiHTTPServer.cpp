@@ -9,6 +9,7 @@ ESP8266WebServer WiFiHTTPServer::server(80);
 
 void (WiFiHTTPServer::*callBackFuncGET)(ESP8266WebServer&);
 void (WiFiHTTPServer::*callBackFuncPOST)(ESP8266WebServer&);
+const String WiFiHTTPServer::pass = "settings";
 
 void WiFiHTTPServer::handleRootPOST()
 {
@@ -18,8 +19,6 @@ void WiFiHTTPServer::handleRootGET()
 {
   callBackFuncGET(server);
 }
-
-
 String WiFiHTTPServer::GetSSID()
 {
   byte mac[WL_MAC_ADDR_LENGTH];
@@ -31,6 +30,42 @@ String WiFiHTTPServer::GetSSID()
 
   return ssid;
 }
+void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
+{
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, pass);
+
+  while(WiFi.status() != WL_CONNECTED){
+  }
+
+  if(MDNS.begin("RenjiSystemServer")){
+
+  }
+
+  server.on("/", HTTP_GET, handleRootGET);
+  server.on("/", HTTP_POST, handleRootPOST);
+  server.begin();
+
+}
+void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
+{
+  callBackFuncGET = funcForGET;
+  callBackFuncPOST = funcForPOST;
+
+  String ssid = GetSSID();
+
+  WiFi.softAP(ssid.c_str(), pass.c_str());
+
+  server.on("/", HTTP_GET, handleRootGET);
+  server.on("/", HTTP_POST, handleRootPOST);
+  server.begin();
+
+}
+void WiFiHTTPServer::LoopForWiFiInterface()
+{
+  server.handleClient();
+}
+
 /*
 const String pass = "Settings";
 ESP8266WebServer server(80);
