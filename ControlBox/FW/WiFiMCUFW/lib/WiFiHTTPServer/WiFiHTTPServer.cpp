@@ -6,18 +6,20 @@
 #include <ESP8266mDNS.h>
 
 ESP8266WebServer WiFiHTTPServer::server(80); 
+
 void (WiFiHTTPServer::*callBackFuncGET)(ESP8266WebServer&);
 void (WiFiHTTPServer::*callBackFuncPOST)(ESP8266WebServer&);
 
+void WiFiHTTPServer::handleRootPOST()
+{
+  callBackFuncPOST(server);
+}
 void WiFiHTTPServer::handleRootGET()
 {
   callBackFuncGET(server);
 }
 
-void WiFiHTTPServer::handleRootPost()
-{
-  callBackFuncPOST(server);
-}
+
 String WiFiHTTPServer::GetSSID()
 {
   byte mac[WL_MAC_ADDR_LENGTH];
