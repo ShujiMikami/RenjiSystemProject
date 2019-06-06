@@ -1,0 +1,49 @@
+@startuml
+
+left to right direction
+
+title WiFiMCU FW statemachine
+
+
+state "Normal Run" as StateNormalRun
+  StateNormalRun : WiFi : ClientMode
+  StateNormalRun : ConnectedTo : LAN
+  StateNormalRun : mDNS : Running
+  StateNormalRun : IPAddress : Issued by DHCP server
+  StateNormalRun : entry / start mDNS
+  StateNormalRun : exit / stop mDNS
+
+state "WiFi setting" as StateWiFiSetting
+  StateWiFiSetting : WiFi : APandServerMode
+  StateWiFiSetting : ConnectedTo : None
+  StateWiFiSetting : mDNS : Stopped
+  StateWiFiSetting : IPAddress : 192.168.4.1
+  StateWiFiSetting : exit / stop server
+
+state "Connection Failed" as StateConnectionFailed
+  StateConnectionFailed : WiFi : not working
+
+
+state "<<pseudo>>\nConnecting to LAN" as StateConnectingToLAN
+  StateConnectingToLAN : WiFi : ClientMode
+  StateConnectingToLAN : entry / get SSID and PASS from file
+  StateConnectingToLAN : entry / connect to router of SSID with pass
+  StateConnectingToLAN : exit / send connection result by UART
+
+[*] --> StateConnectingToLAN
+
+StateConnectingToLAN --> StateConnectionFailed : connection failed
+
+StateConnectingToLAN --> StateNormalRun : connection success
+
+StateNormalRun --> StateWiFiSetting : ModeDecisionPin high
+
+StateConnectionFailed --> StateWiFiSetting : ModeDecisionPin high
+
+StateWiFiSetting --> StateConnectingToLAN : ModeDecisionPin low
+
+StateWiFiSetting --> StateWiFiSetting : HTTP GET / Send WiFi Setting HTML
+StateWiFiSetting --> StateWiFiSetting : HTTP POST / Save posted SSID,PASS to file, send SSID and PASS by UART
+
+
+@enduml

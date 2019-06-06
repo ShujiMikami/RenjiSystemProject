@@ -6,57 +6,46 @@ left to right direction
 
 actor User as ActorUser
 
+actor Cage as ActorCage
 
+node "制御ボード"{
+  usecase "システムONOFF" as UsecaseSystemONOFF
 
-package ControlBox{
-usecase "環境制御 \n==\n フルオート \n--\n セミオート \n--\n マニュアル" as UsecaseMainControl
-  usecase "ヒータON/OFF" as UsecaseHeaterControl
-  usecase "UV ON/OFF" as UsecaseUVControl
-  usecase "ファン ON/OFF" as UsecaseFanControl
-  usecase "温度測定" as UsecaseTempMeasure
-  usecase "Wifi通信機能" as UsecaseWifiConnect
-  usecase "外部NTPで時刻補正機能" as UsecaseNTPTimeCalibration
-  usecase "状態表示" as UsecaseStatusIndicate
-  usecase "制御値設定" as UsecaseSetValue
-  usecase "サーバへデータ送信" as UsecaseSendDataToServer
+  usecase "環境制御" as UsecaseControlEnvironment
 
-  UsecaseMainControl <.. UsecaseHeaterControl : <<include>>
-  UsecaseMainControl <.. UsecaseUVControl : <<include>>
-  UsecaseMainControl <.. UsecaseFanControl : <<include>>
-  UsecaseMainControl <.. UsecaseTempMeasure : <<include>>
-  UsecaseMainControl <.. UsecaseStatusIndicate : <<include>>
-  UsecaseMainControl <.. UsecaseSetValue : <<include>>
-  UsecaseSendDataToServer <.. UsecaseNTPTimeCalibration : <<include>>
-  UsecaseSendDataToServer <.. UsecaseWifiConnect : <<include>>
-  
+  usecase "フルオート制御" as UsecaseFullAutoControl
+
+  usecase "セミオート制御" as UsecaseSemiAutoControl
+
+  usecase "マニュアル制御" as UsecaseManualControl
+
+  UsecaseControlEnvironment <|-down-- UsecaseFullAutoControl
+  UsecaseControlEnvironment <|-down- UsecaseSemiAutoControl
+  UsecaseControlEnvironment <|-down- UsecaseManualControl
+
+  usecase "動作設定\n==\nextension points\n設定方法" as UsecaseSetting
+
+  usecase "ブラウザから設定" as UsecaseSettingWithBrowser
+
+  UsecaseSetting ..> UsecaseSettingWithBrowser : <<extend>>
+
+  usecase "ヒータ制御" as UsecaseControlHeater
+
+  usecase "UV制御" as UsecaseControlUV
+
+  usecase "Fan制御" as UsecaseControlFan
+
+  usecase "温度測定" as UsecaseMeasureTemperature 
+
+  UsecaseControlEnvironment <.up. UsecaseControlHeater : <<include>>
+  UsecaseControlEnvironment <.up. UsecaseControlUV : <<include>>
+  UsecaseControlEnvironment <.up. UsecaseControlFan : <<include>>
+  UsecaseControlEnvironment <.up. UsecaseMeasureTemperature : <<include>>
 }
 
+ActorUser -- UsecaseSystemONOFF
+ActorUser -- UsecaseSetting
 
-package Server{
-  usecase "DDNS機能" as UsecaseDDNS
-  usecase "ControlBoxから送信されたデータの蓄積" as UsecaseDataLogging
-  usecase "ControlBoxから一定時間データが来ない場合通知" as UsecaseNotifyControlBoxSilent
-  usecase "各種データ表示および制御" as UsecaseRemoteControlAndWatch
-  
-  UsecaseRemoteControlAndWatch <.. UsecaseDDNS : <<include>>
-}
+UsecaseControlEnvironment -- ActorCage
 
-package PHPonServer{
-  usecase "現在温度確認" as UsecaseGetCurrentTemp
-  usecase "システムの状態確認" as UsecaseGetCurrentStatus
-  usecase "マニュアル制御 \n==\n 制御開始/停止 \n--\n UV On/Off \n--\n Heater On/Off \n--\n Fan On/Off" as UsecaseFullManualControl
-  usecase "温度の推移をグラフ視認" as UsecaseIndicateGraph
-  usecase "ControlBoxの初期設定" as UsecaseSetupControlBox
-} 
-
-ActorUser -- UsecaseRemoteControlAndWatch : WebBrowser
-ActorUser -- UsecaseNotifyControlBoxSilent : SNS notify
-
-UsecaseRemoteControlAndWatch o-- UsecaseGetCurrentTemp
-UsecaseRemoteControlAndWatch o-- UsecaseGetCurrentStatus
-UsecaseRemoteControlAndWatch o-- UsecaseFullManualControl
-UsecaseRemoteControlAndWatch o-- UsecaseIndicateGraph
-UsecaseRemoteControlAndWatch o-- UsecaseSetupControlBox
-UsecaseDataLogging <.. UsecaseSendDataToServer : <<include>>
-UsecaseDataLogging <.. UsecaseMainControl : <<include>>
 @enduml
