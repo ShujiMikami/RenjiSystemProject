@@ -1,6 +1,10 @@
 #ifndef _WEBSERVERACTION_H_
 #define _WEBSERVERACTION_H_
 
+#include <Arduino.h>
+#include <ESP8266WebServer.h>
+
+/* 
 typedef enum{
     WIFI_SETTING_MODE,
     WIFI_RUN_MODE
@@ -9,16 +13,17 @@ typedef enum{
 
 void Setup_WebServer(WiFiActionMode_t actionMode);
 void Loop_WebServer();
-
+*/
 class WebServerAction
 {
+public:
     typedef enum{
         WIFI_SETTING_MODE,
         WIFI_RUN_MODE
     }WiFiActionMode_t;
 public:
-    static void setup(WiFiActionMode_t actionMode);
-    static void loop();
+    static void Setup(WiFiActionMode_t actionMode);
+    static void Loop();
 private:
     static WiFiActionMode_t getWiFiActionMode();
 
@@ -31,7 +36,6 @@ private:
     static String readSSIDFromFlash();
     static String readPASSFromFlash();
 
-    const static int MODE_DECISION_PIN;
 };
 
 #endif
