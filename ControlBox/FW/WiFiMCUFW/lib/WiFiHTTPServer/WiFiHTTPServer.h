@@ -21,8 +21,6 @@ public:
     static String GetSSID();
 private:
     static ESP8266WebServer server;
-    static void (*callBackFuncGET)(ESP8266WebServer&);
-    static void (*callBackFuncPOST)(ESP8266WebServer&);
     static const String pass;
 private:
     WiFiHTTPServer();

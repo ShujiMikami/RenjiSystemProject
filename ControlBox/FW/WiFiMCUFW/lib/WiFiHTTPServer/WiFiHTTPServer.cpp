@@ -7,8 +7,9 @@
 
 ESP8266WebServer WiFiHTTPServer::server(80); 
 
-void (WiFiHTTPServer::*callBackFuncGET)(ESP8266WebServer&);
-void (WiFiHTTPServer::*callBackFuncPOST)(ESP8266WebServer&);
+static void (*callBackFuncGET)(ESP8266WebServer&);
+static void (*callBackFuncPOST)(ESP8266WebServer&);
+
 const String WiFiHTTPServer::pass = "settings";
 
 void WiFiHTTPServer::handleRootPOST()
