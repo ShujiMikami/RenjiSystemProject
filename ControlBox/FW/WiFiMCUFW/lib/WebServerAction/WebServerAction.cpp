@@ -11,6 +11,7 @@ void WebServerAction::Setup(WiFiActionMode_t actionMode)
         String storedSSID = readSSIDFromFlash();
         String storedPass = readPASSFromFlash();
         WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
+//        WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
     }
 }
 void WebServerAction::Loop()
@@ -24,25 +25,27 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
+    Serial1.println("Sent WiFi setting form");
     server.send(200, "text/html", Form_WiFiSetting);
 }
 
 void WebServerAction::callBackPOST_SystemControl(ESP8266WebServer& server)
 {
-
+    Serial1.println("Received WiFi setting");
 }
 void WebServerAction::callBackGET_SystemControl(ESP8266WebServer& server)
 {
+    Serial1.println("Sent system control form");
     server.send(200, "text/html", Form_SystemControl);
 }
 
 String WebServerAction::readSSIDFromFlash()
 {
-
+    return "SSID";
 }
 String WebServerAction::readPASSFromFlash()
 {
-
+    return "PASS";
 }
 
 
