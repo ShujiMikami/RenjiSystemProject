@@ -33,6 +33,8 @@ String WiFiHTTPServer::GetSSID()
 }
 void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
 {
+  server.close();
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
 
@@ -50,6 +52,8 @@ void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 }
 void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
 {
+  server.close();
+
   callBackFuncGET = funcForGET;
   callBackFuncPOST = funcForPOST;
 
