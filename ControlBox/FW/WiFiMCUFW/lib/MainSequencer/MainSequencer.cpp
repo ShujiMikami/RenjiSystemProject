@@ -5,11 +5,14 @@
 
 const int MainSequencer::MODE_DECISION_PIN = 14;
 
-static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_RUN_MODE;
+static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_SETTING_MODE;
 
 void MainSequencer::Setup()
 {
-    Serial.begin(115200);
+    Serial1.begin(115200);
+
+    //初期のモード設定
+    WebServerAction::Setup(mode);
 }
 void MainSequencer::Loop()
 {
@@ -21,10 +24,10 @@ void MainSequencer::Loop()
         mode = modeSetting;
 
         if(mode == WebServerAction::WIFI_SETTING_MODE){
-            Serial.println("Changed to setting mode");
+            Serial1.println("Changed to setting mode");
         }
         else{
-            Serial.println("Changed to run mode");
+            Serial1.println("Changed to run mode");
         }
         
         
@@ -40,6 +43,7 @@ WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
     pinMode(MODE_DECISION_PIN, INPUT);
 
     int decisionPinState = digitalRead(MODE_DECISION_PIN);
+
 
     if(decisionPinState == HIGH){
         result = WebServerAction::WIFI_SETTING_MODE;
