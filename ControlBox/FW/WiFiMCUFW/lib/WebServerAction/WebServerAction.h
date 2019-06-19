@@ -22,7 +22,7 @@ public:
         WIFI_RUN_MODE
     }WiFiActionMode_t;
 public:
-    static void Setup(WiFiActionMode_t actionMode);
+    static WiFiActionMode_t Setup(WiFiActionMode_t actionMode);
     static void Loop();
 private:
     static WiFiActionMode_t getWiFiActionMode();

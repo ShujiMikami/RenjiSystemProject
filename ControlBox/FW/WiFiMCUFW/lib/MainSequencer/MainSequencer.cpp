@@ -20,8 +20,7 @@ void MainSequencer::Loop()
     WebServerAction::WiFiActionMode_t modeSetting = getModeSettingStatus();
 
     if(mode != modeSetting){
-        WebServerAction::Setup(modeSetting);
-        mode = modeSetting;
+        mode = WebServerAction::Setup(modeSetting);
 
         if(mode == WebServerAction::WIFI_SETTING_MODE){
             Serial1.println("Changed to setting mode");

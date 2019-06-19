@@ -33,14 +33,14 @@ String WiFiHTTPServer::GetSSID()
 
   return ssid;
 }
-void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
+bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
 {
+  bool result = true;
+
   server.close();
 
   callBackFuncGET = funcForGET;
   callBackFuncPOST = funcForPOST;
-
-  WiFi.disconnect();
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
@@ -53,6 +53,8 @@ void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 
     if(cnt++ > CONNECTION_DELAY_LIMIT){
       Serial1.println("connection timeout");
+      result = false;
+      cnt = 0;
       break;
     }
     else{
@@ -60,14 +62,17 @@ void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
     }
   }
 
-  if(MDNS.begin("RenjiSystemServer")){
-    Serial1.printf("mDNS started\r\n");
+  if(result){
+    if(MDNS.begin("RenjiSystemServer")){
+      Serial1.printf("mDNS started\r\n");
+    }
+
+    server.on("/", HTTP_GET, handleRootGET);
+    server.on("/", HTTP_POST, handleRootPOST);
+    server.begin();
   }
 
-  server.on("/", HTTP_GET, handleRootGET);
-  server.on("/", HTTP_POST, handleRootPOST);
-  server.begin();
-
+  return result;
 }
 void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
 {
@@ -79,6 +84,8 @@ void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*func
   String ssid = GetSSID();
 
   WiFi.softAP(ssid.c_str(), pass.c_str());
+
+  delay(100);
 
   server.on("/", HTTP_GET, handleRootGET);
   server.on("/", HTTP_POST, handleRootPOST);

@@ -3,16 +3,23 @@
 #include "WebServerFormHTML.h"
 
 
-void WebServerAction::Setup(WiFiActionMode_t actionMode)
+WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
+    WiFiActionMode_t result = actionMode;
+
     if(actionMode == WIFI_SETTING_MODE){
         WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
     }else{
         String storedSSID = readSSIDFromFlash();
         String storedPass = readPASSFromFlash();
-        WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
-//        WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
+        bool connectionTryResult = WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
+        if(!connectionTryResult){
+            WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
+            result = WIFI_SETTING_MODE;
+        }
     }
+
+    return result;
 }
 void WebServerAction::Loop()
 {
