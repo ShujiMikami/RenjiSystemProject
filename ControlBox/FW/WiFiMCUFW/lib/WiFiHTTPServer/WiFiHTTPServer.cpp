@@ -10,6 +10,8 @@ ESP8266WebServer WiFiHTTPServer::server(80);
 static void (*callBackFuncGET)(ESP8266WebServer&);
 static void (*callBackFuncPOST)(ESP8266WebServer&);
 
+const static int CONNECTION_DELAY_LIMIT = 100;
+
 const String WiFiHTTPServer::pass = "settings";
 
 void WiFiHTTPServer::handleRootPOST()
@@ -35,14 +37,31 @@ void WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 {
   server.close();
 
+  callBackFuncGET = funcForGET;
+  callBackFuncPOST = funcForPOST;
+
+  WiFi.disconnect();
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
-
+  
   while(WiFi.status() != WL_CONNECTED){
+    static int cnt = 0;
+
+    Serial1.printf("waiting for connection\r\n");
+    delay(100);
+
+    if(cnt++ > CONNECTION_DELAY_LIMIT){
+      Serial1.println("connection timeout");
+      break;
+    }
+    else{
+      wdt_reset();
+    }
   }
 
   if(MDNS.begin("RenjiSystemServer")){
-
+    Serial1.printf("mDNS started\r\n");
   }
 
   server.on("/", HTTP_GET, handleRootGET);
