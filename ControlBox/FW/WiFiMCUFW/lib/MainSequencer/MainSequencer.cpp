@@ -1,5 +1,6 @@
 #include "WebServerAction.h"
 #include "MainSequencer.h"
+#include "DebugPrintf.h"
 
 #include <Arduino.h>
 
@@ -9,8 +10,6 @@ static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_SETTING_MO
 
 void MainSequencer::Setup()
 {
-    Serial1.begin(115200);
-
     //初期のモード設定
     WebServerAction::Setup(mode);
 }
@@ -20,16 +19,12 @@ void MainSequencer::Loop()
     WebServerAction::WiFiActionMode_t modeSetting = getModeSettingStatus();
 
     if(mode != modeSetting){
+
+        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Required to change WiFi action mode to " + String(modeSetting));
+
         mode = WebServerAction::Setup(modeSetting);
 
-        if(mode == WebServerAction::WIFI_SETTING_MODE){
-            Serial1.println("Changed to setting mode");
-        }
-        else{
-            Serial1.println("Changed to run mode");
-        }
-        
-        
+        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "WiFi action mode = " + String(mode));
     }
     //ループタスク
     WebServerAction::Loop();
@@ -42,7 +37,6 @@ WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
     pinMode(MODE_DECISION_PIN, INPUT);
 
     int decisionPinState = digitalRead(MODE_DECISION_PIN);
-
 
     if(decisionPinState == HIGH){
         result = WebServerAction::WIFI_SETTING_MODE;
