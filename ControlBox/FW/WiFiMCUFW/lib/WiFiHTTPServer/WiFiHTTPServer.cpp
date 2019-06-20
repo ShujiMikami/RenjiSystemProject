@@ -45,6 +45,7 @@ bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
+  PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Trying to connect to SSID : " + ssid + " with PASS : " + pass);
   
   PrintfDebugger::Printf(DEBUG_MESSAGE_HEADER + "waiting for connection");
   while(WiFi.status() != WL_CONNECTED){
