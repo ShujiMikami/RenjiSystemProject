@@ -16,7 +16,12 @@ ActorUser -> HostMachine : <<WebBrowser>>\n access to ESP8266()
 HostMachine -> WiFiMCU : HTTP GET()
   activate WiFiMCU
 
-HostMachine <-- WiFiMCU : send HTML for system setting()
+WiFiMCU -> MainMCU : <<UART>>\n Status Get Command()
+  activate MainMCU 
+WiFiMCU <-- MainMCU : <<UART>>\n Status(Temperature, switch status etc...)
+  deactivate MainMCU
+
+HostMachine <-- WiFiMCU : send HTML for system setting(Status)
   deactivate WiFiMCU
 
 ActorUser <-- HostMachine : indicate WebPage()
@@ -27,9 +32,6 @@ ActorUser -> HostMachine : <<WebBrowser>>\n Input and push "submit"()
 
 HostMachine -> WiFiMCU : HTTP POST(Input settings)
   activate WiFiMCU
-
-ActorUser <-- HostMachine
-  deactivate HostMachine
 
 MainMCU <- WiFiMCU : <<UART>>\n inform setting 
   activate MainMCU
@@ -44,5 +46,13 @@ opt setting valid
     deactivate MainMCU
 end
 
-deactivate MainMCU
-deactivate WiFiMCU
+MainMCU --> WiFiMCU : <<UART>>\n Status(Temperature, switch status etc...)
+  deactivate MainMCU
+
+HostMachine <-- WiFiMCU : send HTML for system setting(Status)
+  deactivate WiFiMCU
+
+ActorUser <-- HostMachine : inidicate WebPage
+  deactivate HostMachine
+
+
