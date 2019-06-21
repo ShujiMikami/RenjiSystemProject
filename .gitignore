@@ -35,3 +35,5 @@ RenjiSystem.code-workspace
 *.plantuml~
 *.un~
 ControlBox/FW/GPIO_Expander/.vscode/ipch/
+*.txt~
+*.swp

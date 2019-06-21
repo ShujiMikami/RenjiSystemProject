@@ -11,6 +11,9 @@ const String Form_WiFiSetting =
 "  <input type='submit'><br>"
 "</form>";
 
+const String SettingSentPage = 
+"<h1>Wi-Fi Settings sent</h1>";
+
 const String Form_SystemControl = "";
 
 

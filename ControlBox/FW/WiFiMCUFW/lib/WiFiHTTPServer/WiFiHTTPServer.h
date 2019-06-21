@@ -15,14 +15,13 @@ String GetSSID();
 class WiFiHTTPServer
 {
 public:
-    static void Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
+    static bool Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
     static void Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
     static void LoopForWiFiInterface();
     static String GetSSID();
 private:
     static ESP8266WebServer server;
-    static void (*callBackFuncGET)(ESP8266WebServer&);
-    static void (*callBackFuncPOST)(ESP8266WebServer&);
+    static const String pass;
 private:
     WiFiHTTPServer();
     static void handleRootGET();
