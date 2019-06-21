@@ -1,0 +1,64 @@
+1 通信プロトコル
+  UART,115200bps
+
+2 通信フォーマット
+  Command(1byte)
+  data(64byte)
+  CHKSUM(1byte)
+
+2 通信内容
+  2-1 WiFiセットアップモード遷移通知
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x01(TBD)
+    引数1 : SSID(32byte)
+    引数2 : PASS(32byte)
+  2-2 Ack
+    方向 : MainMCU -> WiFiMCU
+    コマンド : 元のコマンドのオウム返し
+  2-3 HostからのWiFi設定取得通知
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x02(TBD)
+  2-4 WiFiルータへの接続結果通知
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x03(TBD)
+    引数 : ステータスコード(1byte)
+  2-5 ケージのステータス要求
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x04(TBD)
+  2-6 ケージのステータス返答
+    方向 : MainMCU -> WiFiMCU
+    コマンド : ステータス要求のオウム返し
+    引数1 : 動作モード(1byte)
+    引数2 : 現在温度(2byte)
+    引数3 : 環境判定(1byte)
+    引数4 : システム内部時刻(4byte)
+    引数5 : SW状態
+  2-7 動作モード設定
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x05(TBD)
+    引数 : 動作モード(1byte)
+  2-8 スイッチ状態設定
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x06(TBD)
+    引数 : スイッチ状態(1byte)
+  2-9 温度テーブル設定
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x07(TBD)
+    引数1 : 時刻1(4byte)
+    引数2 : 温度1(2byte)
+    引数3 : 時刻2(4byte)
+    引数4 : 温度2(2byte)
+    引数5 : 時刻3(4byte)
+    引数6 : 温度3(2byte)
+    引数7 : 時刻4(4byte)
+    引数8 : 温度4(2byte)
+  2-5 UVテーブル設定
+    方向 : WiFiMCU -> MainMCU
+    コマンド : 0x08(TBD)
+    引数1 : ON時刻start(4byte)
+    引数2 : ON時刻end(4byte)
+    引数3 : OFF時刻start(4byte)
+    引数4 : OFF時刻end(4byte)
+
+
+
