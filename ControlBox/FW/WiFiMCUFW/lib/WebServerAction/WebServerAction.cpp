@@ -82,11 +82,6 @@ void WebServerAction::writeHostInfoToFile(String ssid, String pass)
 
     File file = SPIFFS.open(settingFileName, "w");
 
-    while(file.available()){
-        wdt_reset();
-        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "waiting for file available");
-    }
-
     if(!file){
         PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "file open error");
     }
