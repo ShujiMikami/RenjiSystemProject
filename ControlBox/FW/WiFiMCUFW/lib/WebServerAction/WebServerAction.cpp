@@ -70,14 +70,12 @@ void WebServerAction::writeHostInfoToFile(String ssid, String pass)
     if(!isFileSystemInitialized){
         bool result = SPIFFS.begin();
 
-        isFileSystemInitialized = true;
-
         if(result){
-            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS started ");
-        }else{
-            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS mount failed ");
+            isFileSystemInitialized = true;
         }
-
+        else{
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
+        }
     }
 
     File file = SPIFFS.open(settingFileName, "w");
@@ -94,8 +92,14 @@ void WebServerAction::writeHostInfoToFile(String ssid, String pass)
 HostInfo_t WebServerAction::readHostInfoFromFlash()
 {
     if(!isFileSystemInitialized){
-        SPIFFS.begin();
-        isFileSystemInitialized = true;
+        bool result = SPIFFS.begin();
+
+        if(result){
+            isFileSystemInitialized = true;
+        }
+        else{
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
+        }
     }
 
     File file = SPIFFS.open(settingFileName, "r");
