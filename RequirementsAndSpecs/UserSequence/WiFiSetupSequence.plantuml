@@ -34,6 +34,8 @@ WiFiMCU -> WiFiMCU : set WiFi setting action callBack()
   deactivate WiFiMCU
 
 MainMCU <-- WiFiMCU : <<UART>>\n setting mode entry OK notify(SSID, PASS)
+
+MainMCU --> WiFiMCU : <<UART>>\n Ack
   deactivate WiFiMCU
 
 ActorUser <-- MainMCU : <<LCD>>\n Indicate SSID and PASS to acccess()
@@ -75,11 +77,14 @@ WiFiMCU -> WiFiMCU : save SSID and PASS to file
 MainMCU <- WiFiMCU : <<UART>>\n inform setting received 
   activate MainMCU
 
-
 MainMCU --> WiFiMCU : <<GPIO>>\n setting mode disable()
+
+MainMCU --> WiFiMCU : <<UART>>\n Ack
   deactivate MainMCU
 
-ActorUser <-- HostMachine
+HostMachine <-- WiFiMCU : send received notify HTML
+
+ActorUser <-- HostMachine : indicate Web page()
   deactivate HostMachine
 
 WiFiMCU -> WiFiMCU : enter Client mode()
