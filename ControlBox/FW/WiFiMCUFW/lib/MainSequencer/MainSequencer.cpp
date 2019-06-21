@@ -10,8 +10,6 @@ static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_SETTING_MO
 
 void MainSequencer::Setup()
 {
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "commit : c1cc4b5");
-
     //初期のモード設定
     WebServerAction::Setup(mode);
 }
