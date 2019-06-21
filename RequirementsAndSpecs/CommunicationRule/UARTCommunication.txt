@@ -15,6 +15,7 @@
   2-2 Ack
     方向 : MainMCU -> WiFiMCU
     コマンド : 元のコマンドのオウム返し
+    引数 : レスポンス
   2-3 HostからのWiFi設定取得通知
     方向 : WiFiMCU -> MainMCU
     コマンド : 0x02(TBD)
