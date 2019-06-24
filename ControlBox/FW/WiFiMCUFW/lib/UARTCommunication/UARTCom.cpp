@@ -22,11 +22,11 @@ void UARTCom::Setup()
 void UARTCom::Loop()
 {
     if(receivedCount < BUFFER_LENGTH){
-        //タイムアウト処理
-        checkReceiveTimeout();
-
         //受信処理
         receiveProcess();
+        
+        //タイムアウト処理
+        checkReceiveTimeout();
     }
 }
 bool UARTCom::NewCommandAvailable()
