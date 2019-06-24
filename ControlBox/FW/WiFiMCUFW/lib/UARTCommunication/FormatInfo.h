@@ -2,6 +2,7 @@
 #define FORMATINFO_H_
 
 typedef unsigned long uint32_t;
+typedef unsigned char byte;
 
 //共通
 #define COMMAND_BYTE_SIZE 1
@@ -27,6 +28,20 @@ byte GetStatusCode();
 const byte COMMANDCODE_GET_CAGE_STATUS = 0x04;
 
 //ケージのステータス返答
+byte GetActivationMode();
+byte GetCurrentTemperature();
+byte GetEnvironmentJudge();
+byte GetCurrentTime();
+byte GetSwitchStatus();
+
+//動作モード設定
+const byte COMMANDCODE_SET_ACTIVATION_MODE = 0x05;
+void SetActivationMode(byte activationMode);
+
+//スイッチ状態設定
+const byte COMMANDCODE_SET_SWITCH_STATUS = 0x06;
+void SetSwitchStatus(byte switchStatus);
+
 
 
 
