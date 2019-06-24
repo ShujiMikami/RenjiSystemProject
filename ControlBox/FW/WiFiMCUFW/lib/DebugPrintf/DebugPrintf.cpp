@@ -18,7 +18,9 @@ void PrintfDebugger::Printf(String message)
 void PrintfDebugger::Println(String message)
 {
     if(!isInitialized){
-       pSerialForDebug->begin(115200); 
+       pSerialForDebug->begin(115200);
+       //最初のよくわからないゴミに対し改行 
+       pSerialForDebug->println("");
        isInitialized = true;
     }
 
