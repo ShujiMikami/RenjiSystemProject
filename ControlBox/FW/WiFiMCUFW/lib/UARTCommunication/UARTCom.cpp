@@ -3,6 +3,8 @@
 
  
 #define BUFFER_LENGTH 66
+#define DATA_LENGTH_WITHOUT_CHECKSUM (BUFFER_LENGTH - 1)
+#define CHECKSUM_POSITION (BUFFER_LENGTH - 1)
 
 static const uint32_t SERIAL_BAUDRATE = 115200;
 static const uint32_t UART_RECEIVE_TIMEOUT = 50;
@@ -17,9 +19,6 @@ void UARTCom::Setup()
 {
     pSerialForUARTCom->begin(SERIAL_BAUDRATE);
     Println(DEBUG_MESSAGE_HEADER + "UARTCom Setup OK");
-
-    pSerialForUARTCom->flush();
-    Println(DEBUG_MESSAGE_HEADER + "Rx flushed");
 }
 void UARTCom::Loop()
 {
@@ -30,14 +29,11 @@ void UARTCom::Loop()
     receiveProcess();
 
     //データ解析処理
-    bool isValidCommandReceived = false;
-    if(receivedCount == BUFFER_LENGTH){
-        Println(DEBUG_MESSAGE_HEADER + "Analyzing bytes");
-
-    }
+    bool isValidCommandReceived = validateBytes();
 
     //コマンド応答
     if(isValidCommandReceived){
+
 
     }
 }
@@ -84,12 +80,14 @@ void UARTCom::checkReceiveTimeout()
             isReceiveStarted = true;
             timeOutStartEdge = millis();
         }
+    }else if(receivedCount == BUFFER_LENGTH){
+        isReceiveStarted = false;
     }else{
         if(millis() - timeOutStartEdge > UART_RECEIVE_TIMEOUT){
             Println(DEBUG_MESSAGE_HEADER + "TimeoutOccured");
             receivedCount = 0;
             isReceiveStarted = false;
-        } 
+        }
     }
 }
 void UARTCom::receiveProcess()
@@ -110,4 +108,24 @@ void UARTCom::Println(String message)
     if(DebugSwitch){
         PrintfDebugger::Println(message);
     }
+}
+bool UARTCom::validateBytes()
+{
+    bool result = false;
+
+    if(receivedCount < BUFFER_LENGTH){
+        result = false;
+    }
+    else{
+        uint16_t sum = 0;
+        for(int i = 0; i < DATA_LENGTH_WITHOUT_CHECKSUM; i++){
+            sum += (uint16_t)receiveBuffer[i];
+        }
+
+        result = ((byte)sum == receiveBuffer[CHECKSUM_POSITION]);
+
+        Println(DEBUG_MESSAGE_HEADER + "checksum validation : " + String(result));
+    }
+
+    return result;
 }

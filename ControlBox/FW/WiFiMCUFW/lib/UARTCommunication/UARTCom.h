@@ -18,5 +18,6 @@ private:
     static inline int getPositionToWrite();
     static void checkReceiveTimeout();
     static void receiveProcess();
+    static bool validateBytes();
 };
 #endif
