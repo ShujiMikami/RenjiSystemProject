@@ -4,8 +4,6 @@
 
  
 #define BUFFER_LENGTH (FULL_PACKET_SIZE)
-#define DATA_LENGTH_WITHOUT_CHECKSUM (BUFFER_LENGTH - 1)
-#define CHECKSUM_POSITION (BUFFER_LENGTH - 1)
 
 static const uint32_t SERIAL_BAUDRATE = 115200;
 static const uint32_t UART_RECEIVE_TIMEOUT = 50;
@@ -13,7 +11,6 @@ static const uint32_t UART_RECEIVE_TIMEOUT = 50;
 static byte receiveBuffer[BUFFER_LENGTH];
 static int receivedCount = 0;
 static HardwareSerial* pSerialForUARTCom = &Serial;
-//static bool isValidCommandReceived = false;
 
 bool UARTCom::DebugSwitch = false;
 
@@ -30,9 +27,6 @@ void UARTCom::Loop()
 
         //受信処理
         receiveProcess();
-
-        //データ解析処理
-        //isValidCommandReceived = validateBytes();
     }
 }
 bool UARTCom::NewCommandAvailable()
@@ -115,25 +109,3 @@ void UARTCom::Println(String message)
         PrintfDebugger::Println(message);
     }
 }
-/*
-bool UARTCom::validateBytes()
-{
-    bool result = false;
-
-    if(receivedCount < BUFFER_LENGTH){
-        result = false;
-    }
-    else{
-        uint16_t sum = 0;
-        for(int i = 0; i < DATA_LENGTH_WITHOUT_CHECKSUM; i++){
-            sum += (uint16_t)receiveBuffer[i];
-        }
-
-        result = ((byte)sum == receiveBuffer[CHECKSUM_POSITION]);
-
-        Println(DEBUG_MESSAGE_HEADER + "checksum validation : " + String(result));
-    }
-
-    return result;
-}
-*/
