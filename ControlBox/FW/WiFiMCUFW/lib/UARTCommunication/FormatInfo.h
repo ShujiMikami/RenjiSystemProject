@@ -1,8 +1,8 @@
 #ifndef FORMATINFO_H_
 #define FORMATINFO_H_
 
-typedef unsigned long uint32_t;
-typedef unsigned char byte;
+//typedef unsigned long uint32_t;
+//typedef unsigned char byte;
 
 //共通
 #define COMMAND_BYTE_SIZE 1
@@ -18,7 +18,7 @@ typedef unsigned char byte;
 #define CHECKSUM_POS (FULL_PACKET_SIZE - 1)
 
 
-
+/*
 
 byte GetResponse();
 
@@ -55,7 +55,7 @@ const byte COMMANDCODE_SET_SWITCH_STATUS = 0x06;
 void SetSwitchStatus(byte switchStatus);
 
 
-
+*/
 
 
 #endif
