@@ -3,6 +3,7 @@
 
 void UARTComTest::Setup()
 {
+    UARTCom::DebugSwitch = true;
     UARTCom::Setup();
 }
 void UARTComTest::Loop()

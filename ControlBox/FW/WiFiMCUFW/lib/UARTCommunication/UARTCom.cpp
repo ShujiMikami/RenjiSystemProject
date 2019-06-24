@@ -3,23 +3,23 @@
 
  
 #define BUFFER_LENGTH 66
-#define SERIAL_BAUDRATE 115200
+
+static const uint32_t SERIAL_BAUDRATE = 115200;
+static const uint32_t UART_RECEIVE_TIMEOUT = 50;
 
 static byte receiveBuffer[BUFFER_LENGTH];
 static int receivedCount = 0;
 static HardwareSerial* pSerialForUARTCom = &Serial;
 
-static int transmitDataToBuffer(byte* data, int numOfBytesToTransmit);
-static inline int getPositionToWrite();
-static void checkReceiveTimeout();
-static void receiveProcess();
-
-static const uint32_t UART_RECEIVE_TIMEOUT = 50;
+bool UARTCom::DebugSwitch = false;
 
 void UARTCom::Setup()
 {
-    PrintfDebugger::Println("UARTCom Setup OK");
     pSerialForUARTCom->begin(SERIAL_BAUDRATE);
+    Println(DEBUG_MESSAGE_HEADER + "UARTCom Setup OK");
+
+    pSerialForUARTCom->flush();
+    Println(DEBUG_MESSAGE_HEADER + "Rx flushed");
 }
 void UARTCom::Loop()
 {
@@ -32,7 +32,8 @@ void UARTCom::Loop()
     //データ解析処理
     bool isValidCommandReceived = false;
     if(receivedCount == BUFFER_LENGTH){
-        PrintfDebugger::Println("received bytes");
+        Println(DEBUG_MESSAGE_HEADER + "Analyzing bytes");
+
     }
 
     //コマンド応答
@@ -54,7 +55,7 @@ void UARTCom::SendData(byte* data, int numOfBytesToSend)
 
 }
 
-int transmitDataToBuffer(byte* data, int numOfBytesToTransmit)
+int UARTCom::transmitDataToBuffer(byte* data, int numOfBytesToTransmit)
 {
     int countTransmitted = 0;
 
@@ -68,37 +69,45 @@ int transmitDataToBuffer(byte* data, int numOfBytesToTransmit)
 
     return countTransmitted;
 }
-inline int getPositionToWrite()
+inline int UARTCom::getPositionToWrite()
 {
     return receivedCount;
 }
-void checkReceiveTimeout()
+void UARTCom::checkReceiveTimeout()
 {
     static bool isReceiveStarted = false;
     static uint32_t timeOutStartEdge = 0;
 
     if(!isReceiveStarted){
         if(0 < receivedCount && receivedCount < BUFFER_LENGTH){
+            Println(DEBUG_MESSAGE_HEADER + "receive stated");
             isReceiveStarted = true;
             timeOutStartEdge = millis();
         }
     }else{
         if(millis() - timeOutStartEdge > UART_RECEIVE_TIMEOUT){
-            PrintfDebugger::Println("TimeoutOccured");
+            Println(DEBUG_MESSAGE_HEADER + "TimeoutOccured");
             receivedCount = 0;
             isReceiveStarted = false;
         } 
     }
 }
-void receiveProcess()
+void UARTCom::receiveProcess()
 {
     //受信処理
-    size_t bufferedLength = pSerialForUARTCom->getRxBufferSize();
+    size_t bufferedLength = pSerialForUARTCom->available();
 
     //バッファリング処理
     if(bufferedLength > 0){
+        Println(DEBUG_MESSAGE_HEADER + String(bufferedLength) + "bytes message received");
         byte readData[BUFFER_LENGTH];
         pSerialForUARTCom->readBytes(readData, bufferedLength);
         transmitDataToBuffer(readData, bufferedLength);
+    }
+}
+void UARTCom::Println(String message)
+{
+    if(DebugSwitch){
+        PrintfDebugger::Println(message);
     }
 }
