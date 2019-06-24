@@ -1,8 +1,9 @@
 #include "UARTCom.h"
+#include "FormatInfo.h"
 #include "DebugPrintf.h"
 
  
-#define BUFFER_LENGTH 66
+#define BUFFER_LENGTH (FULL_PACKET_SIZE)
 #define DATA_LENGTH_WITHOUT_CHECKSUM (BUFFER_LENGTH - 1)
 #define CHECKSUM_POSITION (BUFFER_LENGTH - 1)
 
@@ -12,6 +13,7 @@ static const uint32_t UART_RECEIVE_TIMEOUT = 50;
 static byte receiveBuffer[BUFFER_LENGTH];
 static int receivedCount = 0;
 static HardwareSerial* pSerialForUARTCom = &Serial;
+//static bool isValidCommandReceived = false;
 
 bool UARTCom::DebugSwitch = false;
 
@@ -22,29 +24,33 @@ void UARTCom::Setup()
 }
 void UARTCom::Loop()
 {
-    //タイムアウト処理
-    checkReceiveTimeout();
+    if(receivedCount < BUFFER_LENGTH){
+        //タイムアウト処理
+        checkReceiveTimeout();
 
-    //受信処理
-    receiveProcess();
+        //受信処理
+        receiveProcess();
 
-    //データ解析処理
-    bool isValidCommandReceived = validateBytes();
-
-    //コマンド応答
-    if(isValidCommandReceived){
-
-
+        //データ解析処理
+        //isValidCommandReceived = validateBytes();
     }
 }
-int UARTCom::GetReceivedCount()
+bool UARTCom::NewCommandAvailable()
 {
-    return 0;
-
+    return (receivedCount >= BUFFER_LENGTH);
 }
-int UARTCom::GetReceivedData(byte* buffer, int numOfBytesToRead)
+int UARTCom::GetReceivedData(byte* buffer, size_t bufferSize)
 {
-    return 0;
+    if(bufferSize < BUFFER_LENGTH){
+        Println(DEBUG_MESSAGE_HEADER + "buffer size is too small");
+    }else{
+        for(int i = 0; i < bufferSize; i++){
+            buffer[i] = receiveBuffer[i];
+        }
+        receivedCount = 0;
+    }
+
+    return bufferSize;
 }
 void UARTCom::SendData(byte* data, int numOfBytesToSend)
 {
@@ -109,6 +115,7 @@ void UARTCom::Println(String message)
         PrintfDebugger::Println(message);
     }
 }
+/*
 bool UARTCom::validateBytes()
 {
     bool result = false;
@@ -129,3 +136,4 @@ bool UARTCom::validateBytes()
 
     return result;
 }
+*/

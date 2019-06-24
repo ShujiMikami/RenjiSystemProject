@@ -5,8 +5,8 @@
 
 class UARTCom{
 public:
-    static int GetReceivedCount();
-    static int GetReceivedData(byte* buffer, int numOfBytesToRead);
+    static bool NewCommandAvailable();
+    static int GetReceivedData(byte* buffer, size_t bufferSize);
     static void SendData(byte* data, int numOfBytesToSend);
     static void Setup();
     static void Loop();
@@ -18,6 +18,6 @@ private:
     static inline int getPositionToWrite();
     static void checkReceiveTimeout();
     static void receiveProcess();
-    static bool validateBytes();
+//    static bool validateBytes();
 };
 #endif
