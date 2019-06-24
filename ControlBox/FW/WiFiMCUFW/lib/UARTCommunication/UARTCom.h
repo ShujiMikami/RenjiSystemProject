@@ -10,7 +10,13 @@ public:
     static void SendData(byte* data, int numOfBytesToSend);
     static void Setup();
     static void Loop();
+    static bool DebugSwitch;
 private:
     UARTCom();
+    static void Println(String message);
+    static int transmitDataToBuffer(byte* data, int numOfBytesToTransmit);
+    static inline int getPositionToWrite();
+    static void checkReceiveTimeout();
+    static void receiveProcess();
 };
 #endif
