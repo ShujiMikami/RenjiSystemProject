@@ -9,4 +9,10 @@ void UARTComTest::Setup()
 void UARTComTest::Loop()
 {
     UARTCom::Loop();
+
+    if(UARTCom::NewCommandAvailable()){
+        byte buffer[256];
+
+        UARTCom::GetReceivedData(buffer, sizeof(buffer));
+    }
 }
