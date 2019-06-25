@@ -11,6 +11,7 @@ public:
 private:
     MainSequencer();
     static WebServerAction::WiFiActionMode_t getModeSettingStatus();
+    static void debugMessageManage();
 private:
     const static int MODE_DECISION_PIN;
 };
