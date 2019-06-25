@@ -38,7 +38,7 @@ int UARTCom::GetReceivedData(byte* buffer, size_t bufferSize)
     if(bufferSize < BUFFER_LENGTH){
         Println(DEBUG_MESSAGE_HEADER + "buffer size is too small");
     }else{
-        for(int i = 0; i < bufferSize; i++){
+        for(size_t i = 0; i < bufferSize; i++){
             buffer[i] = receiveBuffer[i];
         }
         receivedCount = 0;
