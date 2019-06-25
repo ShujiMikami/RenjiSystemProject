@@ -4,14 +4,15 @@
 #include "Test_UARTCom.h"
 #include "Test_WiFiSetupCommand.h"
 #include "Test_WiFiSettingReceivedCommand.h"
+#include "Test_WiFiRouterConnectionCommand.h"
 
 void setup() 
 {
   // put your setup code here, to run once:
   //UARTComTest::Setup();
   //WiFiSetupCommandTest::Setup();
-  WiFiSettingReceivedCommandTest::Setup();
-  
+  //WiFiSettingReceivedCommandTest::Setup();
+  WiFiRouterConnectionCommandTest::Setup(); 
   
   //MainSequencer::Setup();
 }
