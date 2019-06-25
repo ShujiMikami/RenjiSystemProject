@@ -7,8 +7,12 @@
 const char* WebServerAction::settingFileName = "/settings.txt";
 bool WebServerAction::isFileSystemInitialized = false;
 
+bool WebServerAction::DebugSwitch = false;
+
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
+    WiFiHTTPServer::DebugSwitch = true;
+
     WiFiActionMode_t result = actionMode;
 
     if(actionMode == WIFI_SETTING_MODE){
@@ -18,7 +22,7 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
         String storedSSID = hostInfo.GetSSID();
         String storedPass = hostInfo.GetPass();
 
-        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "read SSID : " + storedSSID + ", " + "read PASS : " + storedPass);
+        Println(DEBUG_MESSAGE_HEADER + "read SSID : " + storedSSID + ", " + "read PASS : " + storedPass);
 
         bool connectionTryResult = WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
         if(!connectionTryResult){
@@ -39,30 +43,30 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
     String ssid = server.arg("ssid");
     String pass = server.arg("pass");
 
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Got SSID, PASS = " + ssid + ", " + pass);
+    Println(DEBUG_MESSAGE_HEADER + "Got SSID, PASS = " + ssid + ", " + pass);
 
     writeHostInfoToFile(ssid, pass);
     
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Wrote ssid and pass to file");
+    Println(DEBUG_MESSAGE_HEADER + "Wrote ssid and pass to file");
 
     server.send(200, "text/html", SettingSentPage);
 
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Sent page");
+    Println(DEBUG_MESSAGE_HEADER + "Sent page");
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
     server.send(200, "text/html", Form_WiFiSetting);
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
+    Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
 }
 
 void WebServerAction::callBackPOST_SystemControl(ESP8266WebServer& server)
 {
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Received WiFi setting");
+    Println(DEBUG_MESSAGE_HEADER + "Received WiFi setting");
 }
 void WebServerAction::callBackGET_SystemControl(ESP8266WebServer& server)
 {
     server.send(200, "text/html", Form_SystemControl);
-    PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Sent system control form");
+    Println(DEBUG_MESSAGE_HEADER + "Sent system control form");
 }
 
 void WebServerAction::writeHostInfoToFile(String ssid, String pass)
@@ -74,14 +78,14 @@ void WebServerAction::writeHostInfoToFile(String ssid, String pass)
             isFileSystemInitialized = true;
         }
         else{
-            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
+            Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
         }
     }
 
     File file = SPIFFS.open(settingFileName, "w");
 
     if(!file){
-        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "file open error");
+        Println(DEBUG_MESSAGE_HEADER + "file open error");
     }
 
     file.println(ssid);
@@ -98,14 +102,14 @@ HostInfo_t WebServerAction::readHostInfoFromFlash()
             isFileSystemInitialized = true;
         }
         else{
-            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
+            Println(DEBUG_MESSAGE_HEADER + "SPIFFS start error");
         }
     }
 
     File file = SPIFFS.open(settingFileName, "r");
 
     if(!file){
-        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "file open error");
+        Println(DEBUG_MESSAGE_HEADER + "file open error");
     }
 
     String ssid = file.readStringUntil('\n');
@@ -114,7 +118,12 @@ HostInfo_t WebServerAction::readHostInfoFromFlash()
 
     return HostInfo_t(ssid, pass);
 }
-
+void WebServerAction::Println(String message)
+{
+    if(DebugSwitch){
+        PrintfDebugger::Println(message);
+    }
+}
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)
 {
     ssid = ssidToSet;

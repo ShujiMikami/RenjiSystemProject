@@ -24,6 +24,7 @@ public:
 public:
     static WiFiActionMode_t Setup(WiFiActionMode_t actionMode);
     static void Loop();
+    static bool DebugSwitch;
 private:
     static WiFiActionMode_t getWiFiActionMode();
     static void callBackPOST_WiFiSet(ESP8266WebServer& server);
@@ -32,6 +33,7 @@ private:
     static void callBackGET_SystemControl(ESP8266WebServer& server);
     static HostInfo_t readHostInfoFromFlash();
     static void writeHostInfoToFile(String ssid, String pass);
+    static void Println(String message);
 private:
     static bool isFileSystemInitialized;
     static const char* settingFileName;

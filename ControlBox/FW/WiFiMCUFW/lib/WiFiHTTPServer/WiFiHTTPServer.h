@@ -19,6 +19,7 @@ public:
     static void Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
     static void LoopForWiFiInterface();
     static String GetSSID();
+    static bool DebugSwitch;
 private:
     static ESP8266WebServer server;
     static const String pass;
@@ -26,6 +27,8 @@ private:
     WiFiHTTPServer();
     static void handleRootGET();
     static void handleRootPOST();
+    static void Println(String message);
+    static void Printf(String message);
 };
 
 #endif

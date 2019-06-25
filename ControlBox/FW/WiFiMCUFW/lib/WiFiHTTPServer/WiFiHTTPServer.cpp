@@ -15,6 +15,8 @@ const static int CONNECTION_DELAY_LIMIT = 100;
 
 const String WiFiHTTPServer::pass = "settings";
 
+bool WiFiHTTPServer::DebugSwitch = false;
+
 void WiFiHTTPServer::handleRootPOST()
 {
   callBackFuncPOST(server);
@@ -45,20 +47,20 @@ bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
-  PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Trying to connect to SSID : " + ssid + " with PASS : " + pass);
+  Println(DEBUG_MESSAGE_HEADER + "Trying to connect to SSID : " + ssid + " with PASS : " + pass);
   
-  PrintfDebugger::Printf(DEBUG_MESSAGE_HEADER + "waiting for connection");
+  Printf(DEBUG_MESSAGE_HEADER + "waiting for connection");
   while(WiFi.status() != WL_CONNECTED){
     static int cnt = 0;
 
-    PrintfDebugger::Printf(".");
+    Printf(".");
     delay(100);
 
     if(cnt++ > CONNECTION_DELAY_LIMIT){
       result = false;
       cnt = 0;
 
-      PrintfDebugger::Println("connection timeout");
+      Println("connection timeout");
       break;
     }
     else{
@@ -68,7 +70,7 @@ bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
 
   if(result){
     if(MDNS.begin("RenjiSystemServer")){
-      PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "mDNS started");
+      Println(DEBUG_MESSAGE_HEADER + "mDNS started");
     }
 
     server.on("/", HTTP_GET, handleRootGET);
@@ -99,4 +101,16 @@ void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*func
 void WiFiHTTPServer::LoopForWiFiInterface()
 {
   server.handleClient();
+}
+void WiFiHTTPServer::Println(String message)
+{
+  if(DebugSwitch){
+    PrintfDebugger::Println(message);
+  }
+}
+void WiFiHTTPServer::Printf(String message)
+{
+  if(DebugSwitch){
+    PrintfDebugger::Printf(message);
+  }
 }
