@@ -1,9 +1,10 @@
 #include "WiFiSetupCommand.h"
 #include "FormatInfo.h"
+#include "DebugPrintf.h"
 
 #define SSID_START_POS DATA_START_POS
 #define SSID_BYTE_SIZE 32
-#define PASS_START_POS (SSID_START_POS + SSID_BYTE_SIZE - 1)
+#define PASS_START_POS (SSID_START_POS + SSID_BYTE_SIZE)
 #define PASS_BYTE_SIZE 32
 
 #define SUCCESS_RESULT 0
