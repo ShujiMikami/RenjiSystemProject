@@ -10,16 +10,17 @@ void CageStatusGetCommandTest::Setup()
     PrintfDebugger::Println("################Constructor with dataArray and size####################");
 
     byte dataArray[67] = {0};
-    dataArray[0] = 0x04;//動作モード
-    dataArray[2] = 0x01;//CurrentTemp_H
-    dataArray[3] = 0x02;//CurrentTemp_L
-    dataArray[4] = 0x03;//Judgement
-    dataArray[5] = 0x04;//Time_HH
-    dataArray[6] = 0x05;//Time_HL
-    dataArray[7] = 0x06;//Time_LH
-    dataArray[8] = 0x07;//Time_LL
-    dataArray[9] = 0x08;//SwStatus
-    dataArray[66] = 0x28;
+    dataArray[0] = 0x04;
+    dataArray[2] = 0x01;//動作モード
+    dataArray[3] = 0x02;//CurrentTemp_H
+    dataArray[4] = 0x03;//CurrentTemp_L
+    dataArray[5] = 0x04;//Judgement
+    dataArray[6] = 0x05;//Time_HH
+    dataArray[7] = 0x06;//Time_HL
+    dataArray[8] = 0x07;//Time_LH
+    dataArray[9] = 0x08;//Time_LL
+    dataArray[10] = 0x09;//SwStatus
+    dataArray[66] = 0x31;
 
     CageStatusGetCommand command = CageStatusGetCommand(dataArray, sizeof(dataArray));
 
