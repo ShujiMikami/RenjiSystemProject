@@ -20,6 +20,9 @@ Command_t::Command_t(byte* dataArray, size_t arrayLength)
 }
 Command_t::Command_t()
 {
+    for(int i = 0; i < FULL_PACKET_SIZE; i++){
+        dataBuffer[i] = 0;
+    }
     updateMemberVariable();
 }
 void Command_t::updateMemberVariable()
