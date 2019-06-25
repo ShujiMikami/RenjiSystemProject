@@ -2,8 +2,8 @@
 #include "FormatInfo.h"
 #include "DebugPrintf.h"
 
-#define CONNECTION_STATUS_START_POS DATA_START_POS
-#define CONNECTION_STATUS_BYTE_SIZE 1 
+const int CONNECTION_STATUS_START_POS = DATA_START_POS;
+const int CONNECTION_STATUS_BYTE_SIZE = 1; 
 
 WiFiRouterConnectionCommand::WiFiRouterConnectionCommand(byte* dataArray, size_t arrayLength) : Command_t(dataArray, arrayLength)
 {
