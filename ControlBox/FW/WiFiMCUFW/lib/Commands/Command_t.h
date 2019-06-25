@@ -8,15 +8,19 @@
 class Command_t{
 public:
     Command_t(byte* dataArray, size_t arrayLength);
+    Command_t();
+    static bool DebugSwitch;
 protected:
     byte dataBuffer[FULL_PACKET_SIZE];
     byte commandCode;
     byte response;
     byte checkSum;
     bool commandContentsValid;
-private:
+protected:
     void updateMemberVariable();
     bool checkSumValidate();
+    byte calculateChecksum();
+    void Println(String message);
 };
 
 
