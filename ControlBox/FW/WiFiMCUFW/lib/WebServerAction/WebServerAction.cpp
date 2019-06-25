@@ -11,6 +11,8 @@ bool WebServerAction::DebugSwitch = false;
 
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
+    WiFiHTTPServer::DebugSwitch = true;
+
     WiFiActionMode_t result = actionMode;
 
     if(actionMode == WIFI_SETTING_MODE){

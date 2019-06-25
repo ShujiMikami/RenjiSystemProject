@@ -10,6 +10,9 @@ static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_SETTING_MO
 
 void MainSequencer::Setup()
 {
+    //デバッグスイッチON
+    WebServerAction::DebugSwitch = true;
+    
     //初期のモード設定
     WebServerAction::Setup(mode);
 }
