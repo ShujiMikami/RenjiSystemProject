@@ -1,12 +1,12 @@
 #include <Arduino.h>
 
 //#include "MainSequencer.h"
-#include "Test_WiFiRouterConnectionCommand.h"
+#include "Test_CageStatusGetCommand.h"
 
 void setup() 
 {
   // put your setup code here, to run once:
-  WiFiRouterConnectionCommandTest::Setup(); 
+  CageStatusGetCommandTest::Setup();
   
   //MainSequencer::Setup();
 }
