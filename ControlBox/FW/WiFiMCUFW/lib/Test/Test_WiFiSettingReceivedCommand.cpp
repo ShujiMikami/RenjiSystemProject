@@ -5,7 +5,7 @@
 
 void WiFiSettingReceivedCommandTest::Setup()
 {
-    Command_t::DebugSwitch = true;
+    WiFiSettingReceivedCommand::DebugSwitch = true;
 
     PrintfDebugger::Println("################Constructor with dataArray and size####################");
 
