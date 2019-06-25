@@ -2,13 +2,13 @@
 #include "FormatInfo.h"
 #include "DebugPrintf.h"
 
-#define SSID_START_POS DATA_START_POS
-#define SSID_BYTE_SIZE 32
-#define PASS_START_POS (SSID_START_POS + SSID_BYTE_SIZE)
-#define PASS_BYTE_SIZE 32
+const int SSID_START_POS = DATA_START_POS;
+const int SSID_BYTE_SIZE = 32;
+const int PASS_START_POS = SSID_START_POS + SSID_BYTE_SIZE;
+const int PASS_BYTE_SIZE = 32;
 
-#define SUCCESS_RESULT 0
-#define ERROR_RESULT -1
+const int SUCCESS_RESULT = 0;
+const int ERROR_RESULT = -1;
 
 WiFiSetupCommand::WiFiSetupCommand(byte* dataArray, size_t arrayLength) : Command_t(dataArray, arrayLength)
 {
