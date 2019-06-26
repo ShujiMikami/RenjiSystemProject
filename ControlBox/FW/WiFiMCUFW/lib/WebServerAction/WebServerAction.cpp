@@ -35,8 +35,6 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
 
         bool connectionTryResult = WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
         if(!connectionTryResult){
-            //WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
-            //result = WIFI_SETTING_MODE;
             WiFiHTTPServer::WiFi_Stop();
             result = WIFI_STOP_MODE;
         }
