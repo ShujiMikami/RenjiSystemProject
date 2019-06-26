@@ -58,3 +58,18 @@ void Command_t::Println(String message)
     }
 
 }
+int Command_t::GetBytes(byte* buffer, size_t bufferSize)
+{
+    int result = 0;
+
+    if(bufferSize < FULL_PACKET_SIZE){
+        Println(DEBUG_MESSAGE_HEADER + "buffer size too small");
+    }else{
+        for(int i = 0; i < FULL_PACKET_SIZE; i++){
+            buffer[i] = dataBuffer[i];
+            result++;
+        }
+    }
+
+    return result;
+}

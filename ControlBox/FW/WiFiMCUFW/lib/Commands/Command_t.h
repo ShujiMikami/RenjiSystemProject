@@ -10,6 +10,7 @@ public:
     Command_t(byte* dataArray, size_t arrayLength);
     Command_t();
     static bool DebugSwitch;
+    int GetBytes(byte* buffer, size_t bufferSize);
 protected:
     byte dataBuffer[FULL_PACKET_SIZE];
     byte commandCode;
