@@ -20,6 +20,7 @@ public:
     static void WiFi_Stop();
     static void LoopForWiFiInterface();
     static String GetSSID();
+    static String GetPASS();
     static bool DebugSwitch;
 private:
     static ESP8266WebServer server;

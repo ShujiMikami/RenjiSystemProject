@@ -36,6 +36,10 @@ String WiFiHTTPServer::GetSSID()
 
   return ssid;
 }
+String WiFiHTTPServer::GetPASS()
+{
+  return pass;
+}
 bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
 {
   bool result = true;
