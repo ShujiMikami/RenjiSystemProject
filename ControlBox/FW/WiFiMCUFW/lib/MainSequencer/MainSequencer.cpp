@@ -3,6 +3,10 @@
 #include "DebugPrintf.h"
 #include "UARTCom.h"
 #include "DebugMessageManager.h"
+#include "WiFiHTTPServer.h"
+
+//コマンド関係
+#include "WiFiSetupCommand.h"
 
 #include <Arduino.h>
 
@@ -42,6 +46,15 @@ void MainSequencer::Loop()
     if(event != 0){
         PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "event " + String(event) + " occured");
     }
+
+    if(event == 1){
+        WiFiSetupCommand command = WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS()); 
+        byte byteDataBuf[256];
+        int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
+        byte receiveBuf[256];
+        UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
+    }
+
 }
 
 WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
