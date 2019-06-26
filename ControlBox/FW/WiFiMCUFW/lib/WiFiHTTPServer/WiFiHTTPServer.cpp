@@ -116,3 +116,8 @@ void WiFiHTTPServer::Printf(String message)
     PrintfDebugger::Printf(message);
   }
 }
+void WiFiHTTPServer::WiFi_Stop()
+{
+  server.close();
+  WiFi.mode(WIFI_OFF);
+}

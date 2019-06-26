@@ -27,15 +27,21 @@ void MainSequencer::Loop()
     WebServerAction::WiFiActionMode_t modeSetting = getModeSettingStatus();
 
     if(mode != modeSetting){
-
         PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "Required to change WiFi action mode to " + String(modeSetting));
 
         mode = WebServerAction::Setup(modeSetting);
 
         PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "WiFi action mode = " + String(mode));
+    }else{
+        //ループタスク
+        WebServerAction::Loop();
     }
-    //ループタスク
-    WebServerAction::Loop();
+
+    //イベントのチェック
+    int event = WebServerAction::GetEvent();
+    if(event != 0){
+        PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "event " + String(event) + " occured");
+    }
 }
 
 WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
