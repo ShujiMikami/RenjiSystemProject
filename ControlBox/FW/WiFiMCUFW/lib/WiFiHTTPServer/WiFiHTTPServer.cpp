@@ -89,6 +89,7 @@ void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*func
 
   String ssid = GetSSID();
 
+  WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid.c_str(), pass.c_str());
 
   delay(100);
@@ -97,6 +98,7 @@ void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*func
   server.on("/", HTTP_POST, handleRootPOST);
   server.begin();
 
+  Println(DEBUG_MESSAGE_HEADER + "WiFi setting server started. SSID = " + ssid + ", PASS = " + pass);
 }
 void WiFiHTTPServer::LoopForWiFiInterface()
 {
