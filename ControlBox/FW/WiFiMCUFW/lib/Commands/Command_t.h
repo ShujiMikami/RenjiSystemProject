@@ -1,5 +1,5 @@
-#ifndef _COMMANDANALYZER_H_
-#define _COMMANDANALYZER_H_
+#ifndef _COMMAND_T_H_
+#define _COMMAND_T_H_
 
 #include <Arduino.h>
 #include "FormatInfo.h"

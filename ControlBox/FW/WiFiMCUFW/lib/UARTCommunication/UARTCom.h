@@ -8,6 +8,7 @@ public:
     static bool NewCommandAvailable();
     static int GetReceivedData(byte* buffer, size_t bufferSize);
     static void SendData(byte* data, int numOfBytesToSend);
+    static void SendDataAndReceive(byte* data, size_t numOfBytesToSend, byte* receiveBuffer, size_t numOfBytesToReceive, int timeOut);
     static void Setup();
     static void Loop();
     static bool DebugSwitch;
@@ -18,6 +19,5 @@ private:
     static inline int getPositionToWrite();
     static void checkReceiveTimeout();
     static void receiveProcess();
-//    static bool validateBytes();
 };
 #endif

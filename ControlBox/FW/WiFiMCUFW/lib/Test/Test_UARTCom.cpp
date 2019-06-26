@@ -8,6 +8,7 @@ void UARTComTest::Setup()
 }
 void UARTComTest::Loop()
 {
+    /* 
     UARTCom::Loop();
 
     if(UARTCom::NewCommandAvailable()){
@@ -15,4 +16,10 @@ void UARTComTest::Loop()
 
         UARTCom::GetReceivedData(buffer, sizeof(buffer));
     }
+    */
+   byte data[] = { 0, 1, 2, 3};
+   byte buffer[10];
+   UARTCom::SendDataAndReceive(data, sizeof(data), buffer, sizeof(buffer), 4000);
+
+   delay(1000);
 }

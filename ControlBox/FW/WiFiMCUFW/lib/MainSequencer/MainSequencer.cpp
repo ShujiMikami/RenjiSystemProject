@@ -1,6 +1,7 @@
 #include "WebServerAction.h"
 #include "MainSequencer.h"
 #include "DebugPrintf.h"
+#include "UARTCom.h"
 
 #include <Arduino.h>
 
@@ -12,6 +13,9 @@ void MainSequencer::Setup()
 {
     //デバッグメッセージ切り替え
     debugMessageManage();
+
+    //UARTの初期設定
+    UARTCom::Setup();
 
     //初期のモード設定
     WebServerAction::Setup(mode);

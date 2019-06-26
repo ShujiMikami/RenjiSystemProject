@@ -48,7 +48,7 @@ int UARTCom::GetReceivedData(byte* buffer, size_t bufferSize)
 }
 void UARTCom::SendData(byte* data, int numOfBytesToSend)
 {
-
+    pSerialForUARTCom->write(data, numOfBytesToSend);
 }
 
 int UARTCom::transmitDataToBuffer(byte* data, int numOfBytesToTransmit)
@@ -108,4 +108,15 @@ void UARTCom::Println(String message)
     if(DebugSwitch){
         PrintfDebugger::Println(message);
     }
+}
+void UARTCom::SendDataAndReceive(byte* data, size_t numOfBytesToSend, byte* receiveBuffer, size_t numOfBytesToReceive, int timeOut)
+{
+    pSerialForUARTCom->setTimeout(timeOut);
+
+    SendData(data, numOfBytesToSend);
+    Println(DEBUG_MESSAGE_HEADER + "sent " + String(numOfBytesToSend) + " bytes");
+
+    size_t receivedByteCount = pSerialForUARTCom->readBytes(receiveBuffer, numOfBytesToReceive);
+
+    Println(DEBUG_MESSAGE_HEADER + "received " + String(receivedByteCount) + " bytes");
 }
