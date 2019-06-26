@@ -2,6 +2,7 @@
 #include "MainSequencer.h"
 #include "DebugPrintf.h"
 #include "UARTCom.h"
+#include "DebugMessageManager.h"
 
 #include <Arduino.h>
 
@@ -12,7 +13,7 @@ static WebServerAction::WiFiActionMode_t mode = WebServerAction::WIFI_SETTING_MO
 void MainSequencer::Setup()
 {
     //デバッグメッセージ切り替え
-    debugMessageManage();
+    DebugMessageManager::MessageManage();
 
     //UARTの初期設定
     UARTCom::Setup();
