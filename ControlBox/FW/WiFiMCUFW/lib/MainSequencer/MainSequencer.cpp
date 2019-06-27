@@ -2,12 +2,10 @@
 #include "MainSequencer.h"
 #include "DebugPrintf.h"
 #include "UARTCom.h"
-#include "WiFiHTTPServer.h"
 
-//コマンド関係
-#include "WiFiSetupCommand.h"
-#include "WiFiSettingReceivedCommand.h"
-#include "WiFiRouterConnectionCommand.h"
+#include "Commands.h"
+#include "EventActions.h"
+#include "EventHandler.h"
 
 #include <Arduino.h>
 
@@ -18,6 +16,9 @@ bool MainSequencer::DebugSwitch = false;
 
 void MainSequencer::Setup()
 {
+    //イベントセットアップ
+    setupEvents();
+
     //UARTの初期設定
     UARTCom::Setup();
 
@@ -42,39 +43,8 @@ void MainSequencer::Loop()
 
     //イベントのチェック
     int event = WebServerAction::GetEvent();
-    if(event != 0){
-        Println(DEBUG_MESSAGE_HEADER + "event " + String(event) + " occured");
-    }
 
-    if(event == 1){
-        WiFiSetupCommand command = WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS()); 
-        WiFiSetupCommand responseCommand = WiFiSetupCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }else if(event == 2){
-        WiFiSettingReceivedCommand command = WiFiSettingReceivedCommand();
-        WiFiSettingReceivedCommand responseCommand = WiFiSettingReceivedCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }else if(event == 3){
-        WiFiRouterConnectionCommand command = WiFiRouterConnectionCommand((byte)mode);
-        WiFiRouterConnectionCommand responseCommand = WiFiRouterConnectionCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }
-
+    EventHandler::ExecuteEvent(event);
 }
 
 void MainSequencer::Println(String message)
@@ -100,4 +70,16 @@ WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
     }
 
     return result;
+}
+void MainSequencer::setupEvents()
+{
+    //初期化
+    EventHandler::Setup();
+
+    //イベント登録
+    EventHandler::RegisterEvent(WiFiSetupCommand::CommandCode, WiFiSetupCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiSettingReceivedCommand::CommandCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiRouterConnectionCommand::CommandCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(CageStatusGetCommand::CommandCode, CageStatusGetCommandAction::GetCallBackPointer());
+
 }

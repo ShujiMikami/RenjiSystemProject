@@ -33,8 +33,8 @@ Command_t UARTCom::SendDataAndReceive(Command_t command, int timeOut)
 {
     pSerialForUARTCom->setTimeout(timeOut);
 
-    byte sendData[FULL_PACKET_SIZE];
-    byte receiveBuf[FULL_PACKET_SIZE];
+    byte sendData[FULL_PACKET_SIZE]{ 0 };
+    byte receiveBuf[FULL_PACKET_SIZE]{ 0 };
 
     int commandByteCount = command.GetBytes(sendData, sizeof(sendData));
 

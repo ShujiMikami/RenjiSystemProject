@@ -3,6 +3,7 @@
 #include "WebServerFormHTML.h"
 #include "DebugPrintf.h"
 #include <FS.h>
+#include "Commands.h"
 
 const char* WebServerAction::settingFileName = "/settings.txt";
 bool WebServerAction::isFileSystemInitialized = false;
@@ -11,12 +12,7 @@ bool WebServerAction::DebugSwitch = false;
 
 int WebServerAction::event = 0;
 
-const int TRANSIT_TO_WIFI_SETUPMODE = 1;
-const int RECEIVED_WIFI_SETTING_FROM_HOST = 2;
-const int WIFIROUTER_CONNECTION_RESULT = 3;
-const int RECEIVED_CAGE_STATUSGET_REQUIREMENT = 4;
-const int RECEIVED_ACTIVATIONMODE_SETTING = 5;
-const int RECEIVED_SWITCH_SETTING = 6;
+static Command_t eventArg = Command_t();
 
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
@@ -25,7 +21,8 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
     if(actionMode == WIFI_SETTING_MODE){
         WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
 
-        event = TRANSIT_TO_WIFI_SETUPMODE;
+        event = WiFiSetupCommand::CommandCode;
+        eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
     }else if(actionMode == WIFI_RUN_MODE){
         HostInfo_t hostInfo = readHostInfoFromFlash();
         String storedSSID = hostInfo.GetSSID();
@@ -39,7 +36,8 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
             result = WIFI_STOP_MODE;
         }
 
-        event = WIFIROUTER_CONNECTION_RESULT;
+        event = WiFiRouterConnectionCommand::CommandCode;
+        eventArg = (Command_t)WiFiRouterConnectionCommand((byte)connectionTryResult);
     }else if(actionMode == WIFI_STOP_MODE){
         WiFiHTTPServer::WiFi_Stop();
     }
@@ -66,7 +64,7 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 
     Println(DEBUG_MESSAGE_HEADER + "Sent page");
 
-    event = RECEIVED_WIFI_SETTING_FROM_HOST;
+    event = WiFiSettingReceivedCommand::CommandCode;
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
@@ -150,6 +148,10 @@ int WebServerAction::GetEvent()
 int WebServerAction::PeekEvent()
 {
     return event;
+}
+Command_t WebServerAction::GetEventArg()
+{
+    return eventArg;
 }
 
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)

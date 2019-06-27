@@ -8,6 +8,7 @@ class CageStatusGetCommand : public Command_t{
 public:
     CageStatusGetCommand(byte* dataArray, size_t arrayLength);
     CageStatusGetCommand();
+    CageStatusGetCommand(Command_t command);
     byte GetActivationMode();
     uint16_t GetCurrentTemperature();
     byte GetEnvironmentJudgement();
