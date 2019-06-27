@@ -5,6 +5,7 @@
 #include "DebugMessageManager.h"
 #include "WiFiHTTPServer.h"
 #include "WiFiSettingReceivedCommand.h"
+#include "WiFiRouterConnectionCommand.h"
 
 //コマンド関係
 #include "WiFiSetupCommand.h"
@@ -56,6 +57,12 @@ void MainSequencer::Loop()
         UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
     }else if(event == 2){
         WiFiSettingReceivedCommand command = WiFiSettingReceivedCommand();
+        byte byteDataBuf[256];
+        byte receiveBuf[256];
+        int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
+        UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
+    }else if(event == 3){
+        WiFiRouterConnectionCommand command = WiFiRouterConnectionCommand((byte)mode);
         byte byteDataBuf[256];
         byte receiveBuf[256];
         int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
