@@ -2,16 +2,15 @@
 #define _WIFISETUPCOMMANDACTION_H_
 
 #include <Arduino.h>
+#include "CommandAction.h"
 
-class WiFiSetupCommandAction{
+class WiFiSetupCommandAction : public CommandAction{
 public:
     static const int eventCode = 1;
     static void (*GetCallBackPointer())();
-    static bool DebugSwitch;
 private:
     static void callBack();
     WiFiSetupCommandAction();
-    static void Println(String message);
 };
 
 #endif

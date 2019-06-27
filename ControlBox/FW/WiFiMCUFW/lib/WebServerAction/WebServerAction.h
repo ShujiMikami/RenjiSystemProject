@@ -1,6 +1,7 @@
 #ifndef _WEBSERVERACTION_H_
 #define _WEBSERVERACTION_H_
 
+#include "Command_t.h"
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
 
@@ -28,6 +29,7 @@ public:
     static bool DebugSwitch;
     static int GetEvent();
     static int PeekEvent();
+    static Command_t GetEventArg();
 private:
     static WiFiActionMode_t getWiFiActionMode();
     static void callBackPOST_WiFiSet(ESP8266WebServer& server);

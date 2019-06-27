@@ -16,6 +16,6 @@ void DebugMessageManager::MessageManage()
     UARTCom::DebugSwitch = false;
     Command_t::DebugSwitch = false;
     MainSequencer::DebugSwitch = true;
-    WiFiSetupCommandAction::DebugSwitch = true;
     EventHandler::DebugSwitch = true;
+    CommandAction::DebugSwitch = true;
 }

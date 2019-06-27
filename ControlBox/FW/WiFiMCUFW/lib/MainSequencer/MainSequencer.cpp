@@ -50,42 +50,6 @@ void MainSequencer::Loop()
     int event = WebServerAction::GetEvent();
 
     EventHandler::ExecuteEvent(event);
-
-    /*
-    if(event != 0){
-        Println(DEBUG_MESSAGE_HEADER + "event " + String(event) + " occured");
-    }
-
-    if(event == 1){
-        WiFiSetupCommand command = WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS()); 
-        WiFiSetupCommand responseCommand = WiFiSetupCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }else if(event == 2){
-        WiFiSettingReceivedCommand command = WiFiSettingReceivedCommand();
-        WiFiSettingReceivedCommand responseCommand = WiFiSettingReceivedCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }else if(event == 3){
-        WiFiRouterConnectionCommand command = WiFiRouterConnectionCommand((byte)mode);
-        WiFiRouterConnectionCommand responseCommand = WiFiRouterConnectionCommand(UARTCom::SendDataAndReceive(command, 1000));
-
-        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
-            Println(DEBUG_MESSAGE_HEADER + "ACK received");
-        }else{
-            Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
-        }
-    }
-    */
-
 }
 
 void MainSequencer::Println(String message)
@@ -119,4 +83,8 @@ void MainSequencer::setupEvents()
 
     //イベント登録
     EventHandler::RegisterEvent(WiFiSetupCommandAction::eventCode, WiFiSetupCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiSettingReceivedCommandAction::eventCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiRouterConnectionCommandAction::eventCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
+    
+
 }
