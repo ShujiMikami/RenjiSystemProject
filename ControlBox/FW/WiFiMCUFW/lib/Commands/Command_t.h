@@ -11,6 +11,10 @@ public:
     Command_t();
     static bool DebugSwitch;
     int GetBytes(byte* buffer, size_t bufferSize);
+    byte GetCommandCode();
+    byte GetResponse();
+    byte GetCheckSum();
+    bool IsValidCommand();
 protected:
     byte dataBuffer[FULL_PACKET_SIZE];
     byte commandCode;

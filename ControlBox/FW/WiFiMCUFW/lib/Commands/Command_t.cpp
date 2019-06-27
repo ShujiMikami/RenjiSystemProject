@@ -73,3 +73,19 @@ int Command_t::GetBytes(byte* buffer, size_t bufferSize)
 
     return result;
 }
+byte Command_t::GetCommandCode()
+{
+    return commandCode;
+}
+byte Command_t::GetResponse()
+{
+    return response;
+}
+byte Command_t::GetCheckSum()
+{
+    return checkSum;
+}
+bool Command_t::IsValidCommand()
+{
+    return commandContentsValid;
+}
