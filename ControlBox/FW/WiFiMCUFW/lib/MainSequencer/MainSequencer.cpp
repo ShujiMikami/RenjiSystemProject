@@ -51,12 +51,16 @@ void MainSequencer::Loop()
 
     if(event == 1){
         WiFiSetupCommand command = WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS()); 
-        byte byteDataBuf[256];
-        int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
-        byte receiveBuf[256];
-        UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
+        WiFiSetupCommand responseCommand = WiFiSetupCommand(UARTCom::SendDataAndReceive(command, 1000));
+
+        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "ACK received");
+        }else{
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
+        }
     }else if(event == 2){
         WiFiSettingReceivedCommand command = WiFiSettingReceivedCommand();
+
         byte byteDataBuf[256];
         byte receiveBuf[256];
         int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
@@ -68,7 +72,6 @@ void MainSequencer::Loop()
         int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
         UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
     }
-
 }
 
 WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
