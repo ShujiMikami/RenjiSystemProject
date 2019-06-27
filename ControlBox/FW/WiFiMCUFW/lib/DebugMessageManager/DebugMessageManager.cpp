@@ -14,7 +14,7 @@ void DebugMessageManager::MessageManage()
     WebServerAction::DebugSwitch = false;
     WiFiHTTPServer::DebugSwitch = false;
     UARTCom::DebugSwitch = false;
-    Command_t::DebugSwitch = false;
+    Command_t::DebugSwitch = true;
     MainSequencer::DebugSwitch = true;
     EventHandler::DebugSwitch = true;
     CommandAction::DebugSwitch = true;
