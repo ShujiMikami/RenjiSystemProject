@@ -5,12 +5,13 @@
 #include "WiFiHTTPServer.h"
 #include "UARTCom.h"
 #include "Command_t.h"
-
+#include "MainSequencer.h"
 
 void DebugMessageManager::MessageManage()
 {
-    WebServerAction::DebugSwitch = true;
-    WiFiHTTPServer::DebugSwitch = true;
-    UARTCom::DebugSwitch = true;
-    Command_t::DebugSwitch = true;
+    WebServerAction::DebugSwitch = false;
+    WiFiHTTPServer::DebugSwitch = false;
+    UARTCom::DebugSwitch = false;
+    Command_t::DebugSwitch = false;
+    MainSequencer::DebugSwitch = true;
 }
