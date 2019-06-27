@@ -82,9 +82,9 @@ void MainSequencer::setupEvents()
     EventHandler::Setup();
 
     //イベント登録
-    EventHandler::RegisterEvent(WiFiSetupCommandAction::eventCode, WiFiSetupCommandAction::GetCallBackPointer());
-    EventHandler::RegisterEvent(WiFiSettingReceivedCommandAction::eventCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
-    EventHandler::RegisterEvent(WiFiRouterConnectionCommandAction::eventCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiSetupCommand::CommandCode, WiFiSetupCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiSettingReceivedCommand::CommandCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
+    EventHandler::RegisterEvent(WiFiRouterConnectionCommand::CommandCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
     
 
 }
