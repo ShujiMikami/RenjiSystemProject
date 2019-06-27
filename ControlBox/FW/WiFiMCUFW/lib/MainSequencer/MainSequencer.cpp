@@ -60,11 +60,13 @@ void MainSequencer::Loop()
         }
     }else if(event == 2){
         WiFiSettingReceivedCommand command = WiFiSettingReceivedCommand();
+        WiFiSettingReceivedCommand responseCommand = WiFiSettingReceivedCommand(UARTCom::SendDataAndReceive(command, 1000));
 
-        byte byteDataBuf[256];
-        byte receiveBuf[256];
-        int dataLength = command.GetBytes(byteDataBuf, sizeof(byteDataBuf));
-        UARTCom::SendDataAndReceive(byteDataBuf, dataLength, receiveBuf, dataLength, 1000);
+        if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "ACK received");
+        }else{
+            PrintfDebugger::Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
+        }
     }else if(event == 3){
         WiFiRouterConnectionCommand command = WiFiRouterConnectionCommand((byte)mode);
         byte byteDataBuf[256];
