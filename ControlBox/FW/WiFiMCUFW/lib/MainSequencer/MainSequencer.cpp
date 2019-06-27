@@ -2,13 +2,8 @@
 #include "MainSequencer.h"
 #include "DebugPrintf.h"
 #include "UARTCom.h"
-#include "WiFiHTTPServer.h"
 
-//コマンド関係
-#include "WiFiSetupCommand.h"
-#include "WiFiSettingReceivedCommand.h"
-#include "WiFiRouterConnectionCommand.h"
-
+#include "Commands.h"
 #include "EventActions.h"
 #include "EventHandler.h"
 
@@ -85,6 +80,6 @@ void MainSequencer::setupEvents()
     EventHandler::RegisterEvent(WiFiSetupCommand::CommandCode, WiFiSetupCommandAction::GetCallBackPointer());
     EventHandler::RegisterEvent(WiFiSettingReceivedCommand::CommandCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
     EventHandler::RegisterEvent(WiFiRouterConnectionCommand::CommandCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
-    
+    EventHandler::RegisterEvent(CageStatusGetCommand::CommandCode, CageStatusGetCommandAction::GetCallBackPointer());
 
 }
