@@ -9,6 +9,9 @@
 #include "WiFiSettingReceivedCommand.h"
 #include "WiFiRouterConnectionCommand.h"
 
+#include "EventActions.h"
+#include "EventHandler.h"
+
 #include <Arduino.h>
 
 const int MainSequencer::MODE_DECISION_PIN = 14;
@@ -18,6 +21,9 @@ bool MainSequencer::DebugSwitch = false;
 
 void MainSequencer::Setup()
 {
+    //イベントセットアップ
+    setupEvents();
+
     //UARTの初期設定
     UARTCom::Setup();
 
@@ -42,6 +48,10 @@ void MainSequencer::Loop()
 
     //イベントのチェック
     int event = WebServerAction::GetEvent();
+
+    EventHandler::ExecuteEvent(event);
+
+    /*
     if(event != 0){
         Println(DEBUG_MESSAGE_HEADER + "event " + String(event) + " occured");
     }
@@ -74,6 +84,7 @@ void MainSequencer::Loop()
             Println(DEBUG_MESSAGE_HEADER + "trouble in UART COM");
         }
     }
+    */
 
 }
 
@@ -100,4 +111,12 @@ WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
     }
 
     return result;
+}
+void MainSequencer::setupEvents()
+{
+    //初期化
+    EventHandler::Setup();
+
+    //イベント登録
+    EventHandler::RegisterEvent(WiFiSetupCommandAction::eventCode, WiFiSetupCommandAction::GetCallBackPointer());
 }
