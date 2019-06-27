@@ -5,6 +5,7 @@
 #include "WiFiSetupCommandAction.h"
 #include "WiFiSettingReceivedCommandAction.h"
 #include "WiFiRouterConnectionCommandAction.h"
+#include "CageStatusGetCommandAction.h"
 
 
 #endif
