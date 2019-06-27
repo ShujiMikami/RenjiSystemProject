@@ -37,6 +37,16 @@ WiFiSetupCommand::WiFiSetupCommand(byte* SSID, byte* PASS)
 
     updateMemberVariable();
 }
+WiFiSetupCommand::WiFiSetupCommand(String SSID, String PASS)
+{
+    byte byteSSID[SSID_BYTE_SIZE] = {0};
+    byte bytePASS[PASS_BYTE_SIZE] = {0};
+
+    SSID.getBytes(byteSSID, sizeof(byteSSID));
+    PASS.getBytes(bytePASS, sizeof(bytePASS));
+
+    *this = WiFiSetupCommand(byteSSID, bytePASS);
+}
 int WiFiSetupCommand::GetSSID(byte* buffer, size_t bufferSize)
 {
     int result = SUCCESS_RESULT;
@@ -74,4 +84,12 @@ int WiFiSetupCommand::GetPass(byte* buffer, size_t bufferSize)
     }
 
     return result;
+}
+WiFiSetupCommand::WiFiSetupCommand(Command_t command)
+{
+    byte byteData[FULL_PACKET_SIZE];
+
+    command.GetBytes(byteData, FULL_PACKET_SIZE);
+
+    *this = WiFiSetupCommand(byteData, FULL_PACKET_SIZE);
 }

@@ -9,13 +9,24 @@ bool WebServerAction::isFileSystemInitialized = false;
 
 bool WebServerAction::DebugSwitch = false;
 
+int WebServerAction::event = 0;
+
+const int TRANSIT_TO_WIFI_SETUPMODE = 1;
+const int RECEIVED_WIFI_SETTING_FROM_HOST = 2;
+const int WIFIROUTER_CONNECTION_RESULT = 3;
+const int RECEIVED_CAGE_STATUSGET_REQUIREMENT = 4;
+const int RECEIVED_ACTIVATIONMODE_SETTING = 5;
+const int RECEIVED_SWITCH_SETTING = 6;
+
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
     WiFiActionMode_t result = actionMode;
 
     if(actionMode == WIFI_SETTING_MODE){
         WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
-    }else{
+
+        event = TRANSIT_TO_WIFI_SETUPMODE;
+    }else if(actionMode == WIFI_RUN_MODE){
         HostInfo_t hostInfo = readHostInfoFromFlash();
         String storedSSID = hostInfo.GetSSID();
         String storedPass = hostInfo.GetPass();
@@ -24,9 +35,13 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
 
         bool connectionTryResult = WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
         if(!connectionTryResult){
-            WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
-            result = WIFI_SETTING_MODE;
+            WiFiHTTPServer::WiFi_Stop();
+            result = WIFI_STOP_MODE;
         }
+
+        event = WIFIROUTER_CONNECTION_RESULT;
+    }else if(actionMode == WIFI_STOP_MODE){
+        WiFiHTTPServer::WiFi_Stop();
     }
 
     return result;
@@ -50,6 +65,8 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
     server.send(200, "text/html", SettingSentPage);
 
     Println(DEBUG_MESSAGE_HEADER + "Sent page");
+
+    event = RECEIVED_WIFI_SETTING_FROM_HOST;
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
@@ -122,6 +139,19 @@ void WebServerAction::Println(String message)
         PrintfDebugger::Println(message);
     }
 }
+int WebServerAction::GetEvent()
+{
+    int result = event;
+
+    event = 0;
+
+    return result;
+}
+int WebServerAction::PeekEvent()
+{
+    return event;
+}
+
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)
 {
     ssid = ssidToSet;

@@ -19,12 +19,15 @@ class WebServerAction
 public:
     typedef enum{
         WIFI_SETTING_MODE,
-        WIFI_RUN_MODE
+        WIFI_RUN_MODE,
+        WIFI_STOP_MODE
     }WiFiActionMode_t;
 public:
     static WiFiActionMode_t Setup(WiFiActionMode_t actionMode);
     static void Loop();
     static bool DebugSwitch;
+    static int GetEvent();
+    static int PeekEvent();
 private:
     static WiFiActionMode_t getWiFiActionMode();
     static void callBackPOST_WiFiSet(ESP8266WebServer& server);
@@ -37,6 +40,7 @@ private:
 private:
     static bool isFileSystemInitialized;
     static const char* settingFileName;
+    static int event;
 };
 
 #endif

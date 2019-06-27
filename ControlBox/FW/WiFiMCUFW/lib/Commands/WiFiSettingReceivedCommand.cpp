@@ -19,3 +19,11 @@ WiFiSettingReceivedCommand::WiFiSettingReceivedCommand()
 
     updateMemberVariable();
 }
+WiFiSettingReceivedCommand::WiFiSettingReceivedCommand(Command_t command)
+{
+    byte byteData[FULL_PACKET_SIZE];
+
+    command.GetBytes(byteData, FULL_PACKET_SIZE);
+
+    *this = WiFiSettingReceivedCommand(byteData, FULL_PACKET_SIZE);
+}

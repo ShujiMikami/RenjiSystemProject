@@ -8,6 +8,7 @@ class WiFiSettingReceivedCommand : public Command_t{
 public:
     WiFiSettingReceivedCommand(byte* dataArray, size_t arrayLength);
     WiFiSettingReceivedCommand();
+    WiFiSettingReceivedCommand(Command_t command);
     static const byte CommandCode = 0x02;
 private:
 };

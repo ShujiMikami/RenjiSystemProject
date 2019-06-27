@@ -8,14 +8,13 @@ class MainSequencer
 public:
     static void Setup();
     static void Loop();
+    static bool DebugSwitch;
 private:
     MainSequencer();
     static WebServerAction::WiFiActionMode_t getModeSettingStatus();
-    static void debugMessageManage();
+    static void Println(String message);
 private:
     const static int MODE_DECISION_PIN;
 };
-
-
 
 #endif
