@@ -28,3 +28,11 @@ byte WiFiRouterConnectionCommand::GetConnectionStatus()
 {
     return dataBuffer[CONNECTION_STATUS_START_POS];
 }
+WiFiRouterConnectionCommand::WiFiRouterConnectionCommand(Command_t command)
+{
+    byte byteData[FULL_PACKET_SIZE];
+
+    command.GetBytes(byteData, FULL_PACKET_SIZE);
+
+    *this = WiFiRouterConnectionCommand(byteData, FULL_PACKET_SIZE);
+}

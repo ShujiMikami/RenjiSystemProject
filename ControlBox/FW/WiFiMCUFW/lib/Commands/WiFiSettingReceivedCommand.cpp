@@ -26,5 +26,4 @@ WiFiSettingReceivedCommand::WiFiSettingReceivedCommand(Command_t command)
     command.GetBytes(byteData, FULL_PACKET_SIZE);
 
     *this = WiFiSettingReceivedCommand(byteData, FULL_PACKET_SIZE);
-
 }

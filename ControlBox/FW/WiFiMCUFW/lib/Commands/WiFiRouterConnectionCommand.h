@@ -8,6 +8,7 @@ class WiFiRouterConnectionCommand : public Command_t{
 public:
     WiFiRouterConnectionCommand(byte* dataArray, size_t arrayLength);
     WiFiRouterConnectionCommand(byte connectionStatus);
+    WiFiRouterConnectionCommand(Command_t command);
     static const byte CommandCode = 0x03;
     byte GetConnectionStatus();
 private:
