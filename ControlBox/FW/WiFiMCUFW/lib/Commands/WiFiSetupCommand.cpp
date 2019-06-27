@@ -85,3 +85,11 @@ int WiFiSetupCommand::GetPass(byte* buffer, size_t bufferSize)
 
     return result;
 }
+WiFiSetupCommand::WiFiSetupCommand(Command_t command)
+{
+    byte byteData[FULL_PACKET_SIZE];
+
+    command.GetBytes(byteData, FULL_PACKET_SIZE);
+
+    *this = WiFiSetupCommand(byteData, FULL_PACKET_SIZE);
+}
