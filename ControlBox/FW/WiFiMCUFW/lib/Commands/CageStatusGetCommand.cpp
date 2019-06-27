@@ -62,4 +62,11 @@ byte CageStatusGetCommand::GetSwitchStatus()
 {
     return dataBuffer[SWITCH_STATUS_START_POS];
 }
- 
+CageStatusGetCommand::CageStatusGetCommand(Command_t command)
+{
+    byte byteData[FULL_PACKET_SIZE];
+
+    command.GetBytes(byteData, FULL_PACKET_SIZE);
+
+    *this = CageStatusGetCommand(byteData, FULL_PACKET_SIZE);
+} 
