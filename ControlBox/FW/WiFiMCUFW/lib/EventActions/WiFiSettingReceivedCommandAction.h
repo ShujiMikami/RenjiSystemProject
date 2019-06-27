@@ -6,7 +6,6 @@
 
 class WiFiSettingReceivedCommandAction : public CommandAction{
 public:
-    static const int eventCode = 2;
     static void (*GetCallBackPointer())();
 private:
     static void callBack();

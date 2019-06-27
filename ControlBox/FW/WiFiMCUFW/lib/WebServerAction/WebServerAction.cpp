@@ -3,7 +3,6 @@
 #include "WebServerFormHTML.h"
 #include "DebugPrintf.h"
 #include <FS.h>
-#include "EventActions.h"
 #include "Commands.h"
 
 const char* WebServerAction::settingFileName = "/settings.txt";
@@ -22,7 +21,7 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
     if(actionMode == WIFI_SETTING_MODE){
         WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
 
-        event = WiFiSetupCommandAction::eventCode;
+        event = WiFiSetupCommand::CommandCode;
         eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
     }else if(actionMode == WIFI_RUN_MODE){
         HostInfo_t hostInfo = readHostInfoFromFlash();
@@ -37,7 +36,7 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
             result = WIFI_STOP_MODE;
         }
 
-        event = WiFiRouterConnectionCommandAction::eventCode;
+        event = WiFiRouterConnectionCommand::CommandCode;
         eventArg = (Command_t)WiFiRouterConnectionCommand((byte)connectionTryResult);
     }else if(actionMode == WIFI_STOP_MODE){
         WiFiHTTPServer::WiFi_Stop();
@@ -65,7 +64,7 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 
     Println(DEBUG_MESSAGE_HEADER + "Sent page");
 
-    event = WiFiSettingReceivedCommandAction::eventCode;
+    event = WiFiSettingReceivedCommand::CommandCode;
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
