@@ -73,11 +73,12 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
-    Println(DEBUG_MESSAGE_HEADER + "URI = " + server.uri());
-    if(server.uri() == wifiSetRequests[0]){
+    String uri = server.uri();
+    Println(DEBUG_MESSAGE_HEADER + "URI = " + uri);
+    if(uri == wifiSetRequests[0]){
         server.send(200, "text/html", Form_WiFiSetting);
         Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
-    }else if(server.uri() == wifiSetRequests[1]){
+    }else if(uri == wifiSetRequests[1]){
         server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
     }
 }
