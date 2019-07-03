@@ -6,6 +6,8 @@
 #include <ESP8266mDNS.h>
 #include "DebugPrintf.h"
 
+#define MAX_ADDITIONAL_CALLBACK_REGISTER_COUNT 20
+
 ESP8266WebServer WiFiHTTPServer::server(80); 
 
 static void (*callBackFuncGET)(ESP8266WebServer&);
@@ -40,7 +42,7 @@ String WiFiHTTPServer::GetPASS()
 {
   return pass;
 }
-bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
+bool WiFiHTTPServer::Setup(String* requests, int numOfRequests, void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass)
 {
   bool result = true;
 
@@ -77,14 +79,16 @@ bool WiFiHTTPServer::Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcFor
       Println(DEBUG_MESSAGE_HEADER + "mDNS started");
     }
 
-    server.on("/", HTTP_GET, handleRootGET);
-    server.on("/", HTTP_POST, handleRootPOST);
+    for(int i = 0; i < numOfRequests; i++){
+      server.on(requests[i], HTTP_GET, handleRootGET);
+      server.on(requests[i], HTTP_POST, handleRootPOST);
+    }
     server.begin();
   }
 
   return result;
 }
-void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
+void WiFiHTTPServer::Setup_AP(String* requests, int numOfRequests, void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&))
 {
   server.close();
 
@@ -98,8 +102,10 @@ void WiFiHTTPServer::Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*func
 
   delay(100);
 
-  server.on("/", HTTP_GET, handleRootGET);
-  server.on("/", HTTP_POST, handleRootPOST);
+  for(int i = 0; i < numOfRequests; i++){
+    server.on(requests[i], HTTP_GET, handleRootGET);
+    server.on(requests[i], HTTP_POST, handleRootPOST);
+  } 
   server.begin();
 
   Println(DEBUG_MESSAGE_HEADER + "WiFi setting server started. SSID = " + ssid + ", PASS = " + pass);
