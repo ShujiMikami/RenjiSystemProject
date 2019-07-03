@@ -2,6 +2,7 @@
 #define _WEBSERVERFORMHTML_H_
 
 #include <Arduino.h>
+#include <time.h>
 
 const String Form_WiFiSetting = 
 "<h1>Wi-Fi Settings</h1>"
@@ -16,7 +17,7 @@ const String SettingSentPage =
 
 const String Form_SystemControl = "";
 
-
+String CreateCurrentStatusHTML(String nameOfMode, double currentTemp, String nameOfEnvironmentJudge, time_t currentTime, byte switchState);
 
 
 #endif
