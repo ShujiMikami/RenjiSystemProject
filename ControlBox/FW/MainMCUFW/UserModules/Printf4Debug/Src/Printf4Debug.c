@@ -21,7 +21,7 @@ static Printf4Debug_Stauts_t taskStatus = Printf4Debug_STANDBY;
 
 void Printf4Debug(const char* format, ...)
 {
-  if(taskStatus != Printf4Debug_RUNNING){
+  if(taskStatus == Printf4Debug_RUNNING){
     //不定長変数の処理
     static char bufToSend[QUEUE_BUFFER_SIZE];
 
@@ -29,7 +29,7 @@ void Printf4Debug(const char* format, ...)
 
     va_start(ap, format);
 
-    volatile int charLength = sprintf(bufToSend, format, ap);
+    volatile int charLength = vsprintf(bufToSend, format, ap);
 
     va_end(ap);
 
