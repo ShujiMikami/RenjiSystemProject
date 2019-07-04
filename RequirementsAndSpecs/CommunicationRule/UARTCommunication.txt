@@ -3,6 +3,7 @@
 
 2 通信フォーマット
   Command(1byte)
+  Response(1byte)
   data(64byte)
   CHKSUM(1byte)
 
