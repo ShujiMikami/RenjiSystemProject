@@ -14,12 +14,17 @@ int WebServerAction::event = 0;
 
 static Command_t eventArg = Command_t();
 
+static String systemControlRequests[] = { "/sysset", "/currentStatus"};
+static int systemControlRequestsCount = 2;
+static String wifiSetRequests[] = { "/", "/currentStatus"};
+static int wifiSetRequestsCount = 2;
+
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
     WiFiActionMode_t result = actionMode;
 
     if(actionMode == WIFI_SETTING_MODE){
-        WiFiHTTPServer::Setup_AP(callBackGET_WiFiSet, callBackPOST_WiFiSet);
+        WiFiHTTPServer::Setup_AP(wifiSetRequests, wifiSetRequestsCount, callBackGET_WiFiSet, callBackPOST_WiFiSet);
 
         event = WiFiSetupCommand::CommandCode;
         eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
@@ -30,7 +35,7 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
 
         Println(DEBUG_MESSAGE_HEADER + "read SSID : " + storedSSID + ", " + "read PASS : " + storedPass);
 
-        bool connectionTryResult = WiFiHTTPServer::Setup(callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
+        bool connectionTryResult = WiFiHTTPServer::Setup(systemControlRequests, systemControlRequestsCount, callBackGET_SystemControl, callBackPOST_SystemControl, storedSSID, storedPass);
         if(!connectionTryResult){
             WiFiHTTPServer::WiFi_Stop();
             result = WIFI_STOP_MODE;
@@ -68,18 +73,30 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
-    server.send(200, "text/html", Form_WiFiSetting);
-    Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
+    String uri = server.uri();
+    Println(DEBUG_MESSAGE_HEADER + "URI = " + uri);
+    if(uri == wifiSetRequests[0]){
+        server.send(200, "text/html", Form_WiFiSetting);
+        Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
+    }else if(uri == wifiSetRequests[1]){
+        //server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+        server.send(200, "text/html", Form_SystemControl);
+    }
 }
 
 void WebServerAction::callBackPOST_SystemControl(ESP8266WebServer& server)
 {
-    Println(DEBUG_MESSAGE_HEADER + "Received WiFi setting");
+    Println(DEBUG_MESSAGE_HEADER + "Received system setting");
 }
 void WebServerAction::callBackGET_SystemControl(ESP8266WebServer& server)
 {
-    server.send(200, "text/html", Form_SystemControl);
-    Println(DEBUG_MESSAGE_HEADER + "Sent system control form");
+    String uri = server.uri();
+    if(uri == systemControlRequests[0]){
+        server.send(200, "text/html", Form_SystemControl);
+        Println(DEBUG_MESSAGE_HEADER + "Sent system control form");
+    }else if(uri == systemControlRequests[1]){
+        server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+    }
 }
 
 void WebServerAction::writeHostInfoToFile(String ssid, String pass)

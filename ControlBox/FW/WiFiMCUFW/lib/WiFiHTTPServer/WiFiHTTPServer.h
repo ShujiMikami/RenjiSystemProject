@@ -7,8 +7,8 @@
 class WiFiHTTPServer
 {
 public:
-    static bool Setup(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
-    static void Setup_AP(void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
+    static bool Setup(String* requests, int numOfRequests, void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&), const String& ssid, const String& pass);
+    static void Setup_AP(String* requests, int numOfRequests, void (*funcForGET)(ESP8266WebServer&), void (*funcForPOST)(ESP8266WebServer&));
     static void WiFi_Stop();
     static void LoopForWiFiInterface();
     static String GetSSID();
