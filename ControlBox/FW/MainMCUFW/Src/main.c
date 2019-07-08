@@ -73,6 +73,7 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void StartUartCommunicationTask();
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -115,7 +116,10 @@ int main(void)
   APP_GPIO_Init();
   UARTInit();
 
+  osThreadId UARTReceiveTaskHandle;
   
+  osThreadDef(UARTReceiveTask, StartUartCommunicationTask, osPriorityNormal, 0, 128);
+  UARTReceiveTaskHandle = osThreadCreate(osThread(UARTReceiveTask), NULL);
 
   /* USER CODE END 2 */
 
@@ -197,7 +201,30 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void StartUartCommunicationTask()
+{
+  //とりあえずここにGPIO入れる
+  APP_GPIO_Write(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 
+  //UARTスレッドがちゃんと走るの待ち
+  while(GetStatus_APP_UART() != APP_UART_RUNNING);
+
+  uint8_t buffer[90];
+
+  static int bufferedPos = 0;
+
+  while(1){
+    int receivedByteCount = GetRxQueueCount();
+
+    if(receivedByteCount >= 67){
+      UARTGetReceivedData(buffer, 67);
+      UARTSendData(buffer, 67);
+      Printf4Debug("%d bytes received\r\n", receivedByteCount);
+    }
+
+    osDelay(10);
+  }
+}
 
 /* USER CODE END 4 */
 
