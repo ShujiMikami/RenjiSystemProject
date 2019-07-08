@@ -73,6 +73,7 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void StartUartCommunicationTask();
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -115,7 +116,10 @@ int main(void)
   APP_GPIO_Init();
   UARTInit();
 
+  osThreadId UARTReceiveTaskHandle;
   
+  osThreadDef(UARTReceiveTask, StartUartCommunicationTask, osPriorityNormal, 0, 128);
+  UARTReceiveTaskHandle = osThreadCreate(osThread(UARTReceiveTask), NULL);
 
   /* USER CODE END 2 */
 
@@ -197,7 +201,55 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void StartUartCommunicationTask()
+{
+  //UARTスレッドがちゃんと走るの待ち
+  while(GetStatus_APP_UART() != APP_UART_RUNNING);
 
+  uint8_t buffer[90];
+
+  //static uint8_t messageBuffer[67] = { 0 };
+  static int bufferedPos = 0;
+
+  while(1){
+
+    //int receivedByteCount = UARTGetReceivedData(buffer, sizeof(buffer));
+
+    int receivedByteCount = GetRxQueueCount();
+
+    if(receivedByteCount >= 67){
+      receivedByteCount = UARTGetReceivedData(buffer, receivedByteCount);
+      UARTSendData(buffer, receivedByteCount);
+      Printf4Debug("%d bytes received\r\n", receivedByteCount);
+    }
+
+    /* 
+    if(receivedByteCount > 0){
+      Printf4Debug("%d bytes received\r\n", receivedByteCount);
+      //UARTSendData(buffer, receivedByteCount);
+    }
+    */
+
+    /*
+
+    int cnt = 0;
+    for(cnt = 0; cnt < receivedByteCount; cnt++){
+      if(bufferedPos < 67){
+        messageBuffer[bufferedPos] = buffer[cnt];
+        bufferedPos++;
+      }
+      else{
+        break;
+      }
+    }
+
+    if(bufferedPos == 67){
+      UARTSendData(messageBuffer, 67);
+      bufferedPos = 0;
+    }
+    */
+  }
+}
 
 /* USER CODE END 4 */
 
