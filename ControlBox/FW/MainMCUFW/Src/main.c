@@ -204,10 +204,7 @@ void SystemClock_Config(void)
 void StartUartCommunicationTask()
 {
   //とりあえずここにGPIO入れる
-  //APP_GPIO_Write(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-
+  APP_GPIO_Write(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 
   //UARTスレッドがちゃんと走るの待ち
   while(GetStatus_APP_UART() != APP_UART_RUNNING);
