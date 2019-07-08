@@ -217,7 +217,7 @@ void StartUartCommunicationTask()
 
     int receivedByteCount = GetRxQueueCount();
 
-    if(receivedByteCount >= 67){
+    if(receivedByteCount > 0){
       receivedByteCount = UARTGetReceivedData(buffer, receivedByteCount);
       UARTSendData(buffer, receivedByteCount);
       Printf4Debug("%d bytes received\r\n", receivedByteCount);
