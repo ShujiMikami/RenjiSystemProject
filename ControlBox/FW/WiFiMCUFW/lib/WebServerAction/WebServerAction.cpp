@@ -16,8 +16,8 @@ static Command_t eventArg = Command_t();
 
 static String systemControlRequests[] = { "/sysset", "/currentStatus"};
 static int systemControlRequestsCount = 2;
-static String wifiSetRequests[] = { "/", "/currentStatus"};
-static int wifiSetRequestsCount = 2;
+static String wifiSetRequests[] = { "/", "/currentStatus", "/sysset"};
+static int wifiSetRequestsCount = 3;
 
 WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t actionMode)
 {
@@ -79,7 +79,9 @@ void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
         server.send(200, "text/html", Form_WiFiSetting);
         Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
     }else if(uri == wifiSetRequests[1]){
-        //server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+        event = CageStatusGetCommand::CommandCode;
+        server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+    }else if(uri == wifiSetRequests[2]){
         server.send(200, "text/html", Form_SystemControl);
     }
 }
@@ -170,6 +172,10 @@ Command_t WebServerAction::GetEventArg()
 {
     return eventArg;
 }
+void WebServerAction::SendCageStatusHTML(ESP8266WebServer& server, String activateModeName, double currentTemperature, String environmentJudgeName, uint8_t switchStatus)
+{
+    server.send(200, "text/html", CreateCurrentStatusHTML(activateModeName, currentTemperature, environmentJudgeName, time(0), switchStatus));
+}
 
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)
 {
@@ -184,3 +190,4 @@ String HostInfo_t::GetPass()
 {
     return pass;
 }
+
