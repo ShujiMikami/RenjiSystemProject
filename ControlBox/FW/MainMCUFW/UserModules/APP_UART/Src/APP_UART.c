@@ -72,7 +72,6 @@ void StartUartRXTask(const void* argument)
     }
     else if(edgePassed == 1 && lastDataPosition <= readPosition){//読む前にデータが一度だけ満タンの場合は, read以前の場所しか許されない
       dataCount = lastDataPosition + UART_RECEIVE_BUFFER_SIZE - readPosition;
-      //bufferEdgePassCnt = 0;
     }
     else{
       //bufferEdgeCount = 1で, readを超えた場合はバッファオーバーフロー
@@ -89,11 +88,6 @@ void StartUartRXTask(const void* argument)
       break;
     }
   
-    if(dataCount > 67){
-      volatile int i = 0;
-      i++;
-    }
- 
     int cnt = 0;
     for(cnt = 0; cnt < dataCount; cnt++){
       if(readPosition == UART_RECEIVE_BUFFER_SIZE - 1){
@@ -103,10 +97,6 @@ void StartUartRXTask(const void* argument)
       xQueueSendToBack(UartRxQueue, &receiveBuffer[readPosition % UART_RECEIVE_BUFFER_SIZE], 0);
       queuedCount++;
     }   
-    if(queuedCount > 67){
-      volatile int i = 0;
-      i++;
-    }
   }
   osDelay(10);
 }
@@ -168,10 +158,5 @@ APP_UART_Stauts_t GetStatus_APP_UART()
 }
 int GetRxQueueCount()
 {
-    if(queuedCount > 67){
-      volatile int i = 0;
-      i++;
-    }
-
   return queuedCount;
 }

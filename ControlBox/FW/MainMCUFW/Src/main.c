@@ -208,13 +208,9 @@ void StartUartCommunicationTask()
 
   uint8_t buffer[90];
 
-  //static uint8_t messageBuffer[67] = { 0 };
   static int bufferedPos = 0;
 
   while(1){
-
-    //int receivedByteCount = UARTGetReceivedData(buffer, sizeof(buffer));
-
     int receivedByteCount = GetRxQueueCount();
 
     if(receivedByteCount >= 67){
@@ -224,32 +220,6 @@ void StartUartCommunicationTask()
     }
 
     osDelay(10);
-
-    /* 
-    if(receivedByteCount > 0){
-      Printf4Debug("%d bytes received\r\n", receivedByteCount);
-      //UARTSendData(buffer, receivedByteCount);
-    }
-    */
-
-    /*
-
-    int cnt = 0;
-    for(cnt = 0; cnt < receivedByteCount; cnt++){
-      if(bufferedPos < 67){
-        messageBuffer[bufferedPos] = buffer[cnt];
-        bufferedPos++;
-      }
-      else{
-        break;
-      }
-    }
-
-    if(bufferedPos == 67){
-      UARTSendData(messageBuffer, 67);
-      bufferedPos = 0;
-    }
-    */
   }
 }
 
