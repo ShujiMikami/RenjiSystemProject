@@ -5,6 +5,7 @@
 #include <FS.h>
 #include "Commands.h"
 #include "InternalDataExchanger.h"
+#include "CageStatus.h"
 
 const char* WebServerAction::settingFileName = "/settings.txt";
 bool WebServerAction::isFileSystemInitialized = false;
@@ -43,6 +44,8 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
             WiFiHTTPServer::WiFi_Stop();
             result = WIFI_STOP_MODE;
         }
+
+        InternalDataExchanger::NotifyWiFiRouterConnectionResult(connectionTryResult);
 
 
         //event = WiFiRouterConnectionCommand::CommandCode;
@@ -84,8 +87,9 @@ void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
         server.send(200, "text/html", Form_WiFiSetting);
         Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
     }else if(uri == wifiSetRequests[1]){
-        //event = CageStatusGetCommand::CommandCode;
-        server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+        CageStatus_t currentCageStatus;
+        InternalDataExchanger::GetCageStatus(currentCageStatus);
+        server.send(200, "text/html", CreateCurrentStatusHTML(currentCageStatus));
     }else if(uri == wifiSetRequests[2]){
         server.send(200, "text/html", Form_SystemControl);
     }
@@ -102,7 +106,9 @@ void WebServerAction::callBackGET_SystemControl(ESP8266WebServer& server)
         server.send(200, "text/html", Form_SystemControl);
         Println(DEBUG_MESSAGE_HEADER + "Sent system control form");
     }else if(uri == systemControlRequests[1]){
-        server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
+        CageStatus_t currentCageStatus;
+        InternalDataExchanger::GetCageStatus(currentCageStatus);
+        server.send(200, "text/html", CreateCurrentStatusHTML(currentCageStatus));
     }
 }
 
@@ -179,7 +185,7 @@ Command_t WebServerAction::GetEventArg()
 }
 void WebServerAction::SendCageStatusHTML(ESP8266WebServer& server, String activateModeName, double currentTemperature, String environmentJudgeName, uint8_t switchStatus)
 {
-    server.send(200, "text/html", CreateCurrentStatusHTML(activateModeName, currentTemperature, environmentJudgeName, time(0), switchStatus));
+    //server.send(200, "text/html", CreateCurrentStatusHTML(activateModeName, currentTemperature, environmentJudgeName, time(0), switchStatus));
 }
 
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)

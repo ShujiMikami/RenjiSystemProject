@@ -30,7 +30,6 @@ public:
     static int GetEvent();
     static int PeekEvent();
     static Command_t GetEventArg();
-    static void SendCageStatusHTML(ESP8266WebServer& server, String activateModeName, double currentTemperature, String environmentJudgeName, uint8_t switchStatus);
 private:
     static WiFiActionMode_t getWiFiActionMode();
     static void callBackPOST_WiFiSet(ESP8266WebServer& server);
