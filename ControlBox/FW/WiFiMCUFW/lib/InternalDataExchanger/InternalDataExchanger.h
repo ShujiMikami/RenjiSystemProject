@@ -2,6 +2,7 @@
 #define INTERNALDATAEXCHANGER_H_
 
 #include <Arduino.h>
+#include "CageStatus.h"
 
 
 
@@ -12,12 +13,6 @@ public:
         ERROR_OCCURED,
         NO_REPLY
     }Status_t;
-public:
-    class CageStatus_t{
-        public:
-        private:
-
-    };
 public:
     static bool DebugSwitch;
 
