@@ -13,7 +13,6 @@ private:
     MainSequencer();
     static WebServerAction::WiFiActionMode_t getModeSettingStatus();
     static void Println(String message);
-    static void setupEvents();
 private:
     const static int MODE_DECISION_PIN;
 };

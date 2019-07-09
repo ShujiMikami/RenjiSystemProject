@@ -3,10 +3,6 @@
 #include "DebugPrintf.h"
 #include "UARTCom.h"
 
-#include "Commands.h"
-#include "EventActions.h"
-#include "EventHandler.h"
-
 #include <Arduino.h>
 
 const int MainSequencer::MODE_DECISION_PIN = 14;
@@ -16,9 +12,6 @@ bool MainSequencer::DebugSwitch = false;
 
 void MainSequencer::Setup()
 {
-    //イベントセットアップ
-    setupEvents();
-
     //UARTの初期設定
     UARTCom::Setup();
 
@@ -41,10 +34,6 @@ void MainSequencer::Loop()
         WebServerAction::Loop();
     }
 
-    //イベントのチェック
-    int event = WebServerAction::GetEvent();
-
-    EventHandler::ExecuteEvent(event);
 }
 
 void MainSequencer::Println(String message)
@@ -70,16 +59,4 @@ WebServerAction::WiFiActionMode_t MainSequencer::getModeSettingStatus()
     }
 
     return result;
-}
-void MainSequencer::setupEvents()
-{
-    //初期化
-    EventHandler::Setup();
-
-    //イベント登録
-    EventHandler::RegisterEvent(WiFiSetupCommand::CommandCode, WiFiSetupCommandAction::GetCallBackPointer());
-    EventHandler::RegisterEvent(WiFiSettingReceivedCommand::CommandCode, WiFiSettingReceivedCommandAction::GetCallBackPointer());
-    EventHandler::RegisterEvent(WiFiRouterConnectionCommand::CommandCode, WiFiRouterConnectionCommandAction::GetCallBackPointer());
-    EventHandler::RegisterEvent(CageStatusGetCommand::CommandCode, CageStatusGetCommandAction::GetCallBackPointer());
-
 }

@@ -10,7 +10,7 @@ public:
     CageStatusGetCommand();
     CageStatusGetCommand(Command_t command);
     byte GetActivationMode();
-    uint16_t GetCurrentTemperature();
+    double GetCurrentTemperature();
     byte GetEnvironmentJudgement();
     uint32_t GetInternalTime();
     byte GetSwitchStatus();

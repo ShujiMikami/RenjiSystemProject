@@ -13,6 +13,7 @@ const int INTERNALTIME_BYTE_SIZE = 4;
 const int SWITCH_STATUS_START_POS = INTERNALTIME_START_POS + INTERNALTIME_BYTE_SIZE;
 const int SWITCH_STATUS_BYTE_SIZE = 1;
 
+
 CageStatusGetCommand::CageStatusGetCommand(byte* dataArray, size_t arrayLength) : Command_t(dataArray, arrayLength)
 {
     if(commandContentsValid){//チェックサムOKの場合は, コマンドコードが正しいかチェックする
@@ -34,7 +35,7 @@ byte CageStatusGetCommand::GetActivationMode()
 {
     return dataBuffer[ACTIVATIONMODE_START_POS];
 }
-uint16_t CageStatusGetCommand::GetCurrentTemperature()
+double CageStatusGetCommand::GetCurrentTemperature()
 {
     uint16_t result = 0;
 
@@ -42,7 +43,7 @@ uint16_t CageStatusGetCommand::GetCurrentTemperature()
         result |= ((uint16_t)dataBuffer[CURRENTTEMPERATURE_START_POS + i] << ((CURRENTTEMPERATURE_BYTE_SIZE - i - 1) * 8));
     }
 
-    return result;
+    return (double)result / 10.0;
 }
 byte CageStatusGetCommand::GetEnvironmentJudgement()
 {
