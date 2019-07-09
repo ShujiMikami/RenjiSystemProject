@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <time.h>
+#include "CageStatus.h"
 
 const String Form_WiFiSetting = 
 "<h1>Wi-Fi Settings</h1>"
@@ -104,7 +105,7 @@ const String Form_SystemControl =
 "  </span>"
 "</form>";
 
-String CreateCurrentStatusHTML(String nameOfMode, double currentTemp, String nameOfEnvironmentJudge, time_t currentTime, byte switchState);
+String CreateCurrentStatusHTML(CageStatus_t cageStatus);
 
 const String InternalErrorHTML = 
 "<h1>Internal Error</h1>";
