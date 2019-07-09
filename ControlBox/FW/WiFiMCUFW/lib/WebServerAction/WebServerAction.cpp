@@ -70,7 +70,6 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 
     Println(DEBUG_MESSAGE_HEADER + "Sent page");
 
-    //event = WiFiSettingReceivedCommand::CommandCode;
     InternalDataExchanger::NotifyWiFiSetupReceivedFromHost();
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
