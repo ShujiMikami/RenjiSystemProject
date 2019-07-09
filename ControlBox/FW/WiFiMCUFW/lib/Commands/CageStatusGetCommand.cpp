@@ -13,28 +13,6 @@ const int INTERNALTIME_BYTE_SIZE = 4;
 const int SWITCH_STATUS_START_POS = INTERNALTIME_START_POS + INTERNALTIME_BYTE_SIZE;
 const int SWITCH_STATUS_BYTE_SIZE = 1;
 
-const String ACTIVATE_MODE_NAME[] = {
-    "FullAuto",
-    "SemiAuto",
-    "FullManual"
-    "NotDefined"
-};
-
-const String ENVIRONMENT_JUDGE_NAME[] = {
-    "Heating",
-    "NaturalCooling",
-    "Cooling",
-    "NotDefined"
-};
-
-String CageStatusGetCommand::GetActivationModeString()
-{
-    return ACTIVATE_MODE_NAME[(int)GetActivationMode()];
-}
-String CageStatusGetCommand::GetEnvironmentJudgeString()
-{
-    return ENVIRONMENT_JUDGE_NAME[(int)GetEnvironmentJudgement()];
-}
 
 CageStatusGetCommand::CageStatusGetCommand(byte* dataArray, size_t arrayLength) : Command_t(dataArray, arrayLength)
 {
@@ -53,22 +31,9 @@ CageStatusGetCommand::CageStatusGetCommand()
 
     updateMemberVariable();
 }
-CageStatusGetCommand::Activation_Mode_t CageStatusGetCommand::GetActivationMode()
+byte CageStatusGetCommand::GetActivationMode()
 {
-    Activation_Mode_t result = NOT_DEFINED_MODE;
-
-    switch(dataBuffer[ACTIVATIONMODE_START_POS]){
-    case FULL_AUTO : 
-        result = FULL_AUTO;
-    case SEMI_AUTO : 
-        result = SEMI_AUTO;
-    case FULL_MANUAL : 
-        result = FULL_MANUAL;
-    default :
-        result = NOT_DEFINED_MODE;
-    }
-
-    return result;
+    return dataBuffer[ACTIVATIONMODE_START_POS];
 }
 double CageStatusGetCommand::GetCurrentTemperature()
 {
@@ -80,22 +45,9 @@ double CageStatusGetCommand::GetCurrentTemperature()
 
     return (double)result / 10.0;
 }
-CageStatusGetCommand::EnvironmentJudgement_t CageStatusGetCommand::GetEnvironmentJudgement()
+byte CageStatusGetCommand::GetEnvironmentJudgement()
 {
-    EnvironmentJudgement_t result = NOT_DEFINED_JUDGE;
-
-    switch(dataBuffer[ENVIRONMENTJUDGEMENT_START_POS]){
-    case HEATING : 
-        result = HEATING;
-    case NATURAL_COOLING : 
-        result = NATURAL_COOLING;
-    case COOLING : 
-        result = COOLING;
-    default :
-        result = NOT_DEFINED_JUDGE;
-    }
-
-    return result;
+    return dataBuffer[ENVIRONMENTJUDGEMENT_START_POS];
 }
 uint32_t CageStatusGetCommand::GetInternalTime()
 {
