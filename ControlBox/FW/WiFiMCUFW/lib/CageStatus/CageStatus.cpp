@@ -72,4 +72,7 @@ CageStatus_t::CageStatus_t(byte Mode, double Temperature, byte EnvironmentJudge,
         environmentJudge = NOT_DEFINED_JUDGE;
         break;
     }
+
+    temperature = Temperature;
+    switchStatus = SwitchStatus;
 }
