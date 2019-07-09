@@ -30,8 +30,6 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
 
         InternalDataExchanger::NotifyWiFiSetupModeLaunched(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
 
-        //event = WiFiSetupCommand::CommandCode;
-        //eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
     }else if(actionMode == WIFI_RUN_MODE){
         HostInfo_t hostInfo = readHostInfoFromFlash();
         String storedSSID = hostInfo.GetSSID();
@@ -46,10 +44,6 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
         }
 
         InternalDataExchanger::NotifyWiFiRouterConnectionResult(connectionTryResult);
-
-
-        //event = WiFiRouterConnectionCommand::CommandCode;
-        //eventArg = (Command_t)WiFiRouterConnectionCommand((byte)connectionTryResult);
     }else if(actionMode == WIFI_STOP_MODE){
         WiFiHTTPServer::WiFi_Stop();
     }
@@ -182,10 +176,6 @@ int WebServerAction::PeekEvent()
 Command_t WebServerAction::GetEventArg()
 {
     return eventArg;
-}
-void WebServerAction::SendCageStatusHTML(ESP8266WebServer& server, String activateModeName, double currentTemperature, String environmentJudgeName, uint8_t switchStatus)
-{
-    //server.send(200, "text/html", CreateCurrentStatusHTML(activateModeName, currentTemperature, environmentJudgeName, time(0), switchStatus));
 }
 
 HostInfo_t::HostInfo_t(String ssidToSet, String passToSet)
