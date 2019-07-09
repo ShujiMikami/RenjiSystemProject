@@ -106,5 +106,7 @@ const String Form_SystemControl =
 
 String CreateCurrentStatusHTML(String nameOfMode, double currentTemp, String nameOfEnvironmentJudge, time_t currentTime, byte switchState);
 
+const String InternalErrorHTML = 
+"<h1>Internal Error</h1>";
 
 #endif

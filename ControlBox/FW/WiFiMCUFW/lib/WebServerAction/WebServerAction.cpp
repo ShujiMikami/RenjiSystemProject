@@ -4,6 +4,7 @@
 #include "DebugPrintf.h"
 #include <FS.h>
 #include "Commands.h"
+#include "InternalDataExchanger.h"
 
 const char* WebServerAction::settingFileName = "/settings.txt";
 bool WebServerAction::isFileSystemInitialized = false;
@@ -26,8 +27,10 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
     if(actionMode == WIFI_SETTING_MODE){
         WiFiHTTPServer::Setup_AP(wifiSetRequests, wifiSetRequestsCount, callBackGET_WiFiSet, callBackPOST_WiFiSet);
 
-        event = WiFiSetupCommand::CommandCode;
-        eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
+        InternalDataExchanger::NotifyWiFiSetupModeLaunched(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
+
+        //event = WiFiSetupCommand::CommandCode;
+        //eventArg = (Command_t)WiFiSetupCommand(WiFiHTTPServer::GetSSID(), WiFiHTTPServer::GetPASS());
     }else if(actionMode == WIFI_RUN_MODE){
         HostInfo_t hostInfo = readHostInfoFromFlash();
         String storedSSID = hostInfo.GetSSID();
@@ -41,8 +44,9 @@ WebServerAction::WiFiActionMode_t WebServerAction::Setup(WiFiActionMode_t action
             result = WIFI_STOP_MODE;
         }
 
-        event = WiFiRouterConnectionCommand::CommandCode;
-        eventArg = (Command_t)WiFiRouterConnectionCommand((byte)connectionTryResult);
+
+        //event = WiFiRouterConnectionCommand::CommandCode;
+        //eventArg = (Command_t)WiFiRouterConnectionCommand((byte)connectionTryResult);
     }else if(actionMode == WIFI_STOP_MODE){
         WiFiHTTPServer::WiFi_Stop();
     }
@@ -69,7 +73,8 @@ void WebServerAction::callBackPOST_WiFiSet(ESP8266WebServer& server)
 
     Println(DEBUG_MESSAGE_HEADER + "Sent page");
 
-    event = WiFiSettingReceivedCommand::CommandCode;
+    //event = WiFiSettingReceivedCommand::CommandCode;
+    InternalDataExchanger::NotifyWiFiSetupReceivedFromHost();
 }
 void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
 {
@@ -79,7 +84,7 @@ void WebServerAction::callBackGET_WiFiSet(ESP8266WebServer& server)
         server.send(200, "text/html", Form_WiFiSetting);
         Println(DEBUG_MESSAGE_HEADER + "Sent WiFi setting form");
     }else if(uri == wifiSetRequests[1]){
-        event = CageStatusGetCommand::CommandCode;
+        //event = CageStatusGetCommand::CommandCode;
         server.send(200, "text/html", CreateCurrentStatusHTML("ModeA", 25.0, "Natural Cooling", time(0), 0x7F));
     }else if(uri == wifiSetRequests[2]){
         server.send(200, "text/html", Form_SystemControl);

@@ -17,7 +17,7 @@ bool MainSequencer::DebugSwitch = false;
 void MainSequencer::Setup()
 {
     //イベントセットアップ
-    setupEvents();
+    //setupEvents();
 
     //UARTの初期設定
     UARTCom::Setup();
@@ -42,9 +42,9 @@ void MainSequencer::Loop()
     }
 
     //イベントのチェック
-    int event = WebServerAction::GetEvent();
+    //int event = WebServerAction::GetEvent();
 
-    EventHandler::ExecuteEvent(event);
+    //EventHandler::ExecuteEvent(event);
 }
 
 void MainSequencer::Println(String message)

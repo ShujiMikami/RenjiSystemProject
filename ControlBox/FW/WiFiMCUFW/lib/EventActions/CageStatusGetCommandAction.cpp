@@ -16,6 +16,7 @@ void CageStatusGetCommandAction::callBack()
     CageStatusGetCommand responseCommand = CageStatusGetCommand(UARTCom::SendDataAndReceive(command, 1000));
 
     if(responseCommand.IsValidCommand() && responseCommand.GetResponse() == 0){
+        
 
         Println(DEBUG_MESSAGE_HEADER + "ACK received");
     }else{
