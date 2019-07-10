@@ -58,6 +58,7 @@
 #include "Printf4Debug.h"
 #include "APP_GPIO.h"
 #include "APP_UART.h"
+#include "CommandAnalyzer.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -116,10 +117,14 @@ int main(void)
   APP_GPIO_Init();
   UARTInit();
 
+  CommandAnalyzer_Init();
+
+  /* 
   osThreadId UARTReceiveTaskHandle;
   
   osThreadDef(UARTReceiveTask, StartUartCommunicationTask, osPriorityNormal, 0, 128);
   UARTReceiveTaskHandle = osThreadCreate(osThread(UARTReceiveTask), NULL);
+  */
 
   /* USER CODE END 2 */
 
