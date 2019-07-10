@@ -17,6 +17,7 @@ void UARTSendData(uint8_t* data, uint16_t dataLength);
 void UARTInit();
 APP_UART_Stauts_t GetStatus_APP_UART();
 int GetRxQueueCount();
+void FlushBuffer();
 
 
 

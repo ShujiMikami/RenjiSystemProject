@@ -85,7 +85,8 @@ void StartUartRXTask(const void* argument)
     if(taskStatus == APP_UART_ERROR_STOPPED){
       //エラー時は, タスクステータスをセットしてブレークすることでタスク終了してしまう
       //このフラグは, TXタスクで立つ場合もある
-      break;
+      //break;
+      FlushBuffer();
     }
   
     int cnt = 0;
@@ -114,7 +115,8 @@ void StartUartTXTask(const void* argument)
     if(taskStatus == APP_UART_ERROR_STOPPED){
       //エラー時は, タスクステータスをセットしてブレークすることでタスク終了してしまう
       //このフラグは, RXタスクで立つ場合もある
-      break;
+      FlushBuffer();
+      //break;
     }
   }
   osDelay(10);
@@ -159,4 +161,11 @@ APP_UART_Stauts_t GetStatus_APP_UART()
 int GetRxQueueCount()
 {
   return queuedCount;
+}
+void FlushBuffer()
+{
+  xQueueReset(UartRxQueue);
+  xQueueReset(UartTxQueue);
+
+  queuedCount = 0;
 }
