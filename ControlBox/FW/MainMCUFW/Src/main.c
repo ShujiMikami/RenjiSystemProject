@@ -119,7 +119,7 @@ int main(void)
 
   CommandAnalyzer_Init();
 
-  /* 
+  /*
   osThreadId UARTReceiveTaskHandle;
   
   osThreadDef(UARTReceiveTask, StartUartCommunicationTask, osPriorityNormal, 0, 128);
