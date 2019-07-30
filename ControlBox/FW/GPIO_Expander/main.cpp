@@ -17,6 +17,7 @@ void commandBuffering();
 
 int main() 
 {
+    commandBuffering();
     //AddressSetting
     i2cSlave.address(I2C_SAD);
 

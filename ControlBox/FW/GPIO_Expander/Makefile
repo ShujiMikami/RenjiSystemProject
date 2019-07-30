@@ -208,8 +208,10 @@ CXX_FLAGS += -funsigned-char
 CXX_FLAGS += -MMD
 CXX_FLAGS += -fno-delete-null-pointer-checks
 CXX_FLAGS += -fomit-frame-pointer
-CXX_FLAGS += -Os
+CXX_FLAGS += -O0
 CXX_FLAGS += -g1
+#CXX_FLAGS += -g
+CXX_FLAGS += -gdwarf-2
 CXX_FLAGS += -DMBED_RTOS_SINGLE_THREAD
 CXX_FLAGS += -mcpu=cortex-m0
 CXX_FLAGS += -mthumb
